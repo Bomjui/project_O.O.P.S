@@ -5,7 +5,7 @@ class Game_days_live: #Класс дней, счёт дней, цикл игры
     
     def __init__(self, count_day):
         self.count_day = count_day
-        self.work = workbench()
+        self.work = workbench() # Назначение рабочего стола
 
     def Days_live(self):
         print(txt.History[1])
