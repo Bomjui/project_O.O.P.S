@@ -1,6 +1,7 @@
 from random import choices
 import sys
 import time
+import curses
 
 def cursor_off():
     sys.stdout.write("\033[?25l")
@@ -25,6 +26,48 @@ def animation_terminal(n, arr, tm, done_showing = False):
         print(" done")
         time.sleep(tm)
         delete_symbol(2)
+
+def history_printer(stdscr, txt, string):
+    while True:
+        stdscr.addstr(txt)
+        stdscr.addstr(string, 0, "Нажми Enter чтобы продолжить")
+        key = stdscr.getch()
+        if key in (10, 13):
+            stdscr.clear()
+            break
+
+def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False):
+    cursor_off()
+    while True:
+        stdscr.clear()
+
+        if up == True:
+            stdscr.addstr(up_text)
+
+        for i, option in enumerate(options):
+            if i == index:
+                stdscr.addstr(string + i, 0, f"{option} <--")
+            else:
+                stdscr.addstr(string + i, 0, option)
+
+        if down == True:
+            stdscr.addstr(down_text)
+
+        key = stdscr.getch()
+
+        if key in (ord("w"), ord("W")):
+            index = (index - 1) % len(options)
+
+        elif key in (ord("s"), ord("S")):
+            index = (index + 1) % len(options)
+
+        elif key in (10, 13):
+            stdscr.clear()
+            stdscr.addstr(0, 0, f"Ты выбрал: {options[index]}")
+            stdscr.refresh()
+            stdscr.getch()
+            cursor_on()
+            break
 def for_i_help(arr):
     a = []
     for i in arr.values():
@@ -43,3 +86,6 @@ def for_printer(arr, numbers_paste = False):
 
 def random_choiser(arr):
     return choices(arr)
+
+options = ["A", "B", "C", "D", "E", "F"]
+index = 0

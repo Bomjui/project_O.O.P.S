@@ -4,7 +4,7 @@ class Game:
     
     def Game_while(self):
         while Game_TF == True:
-            Game_TF = True
+            Game_TF = False
             
 
     def analys_game_correct_choice(self):

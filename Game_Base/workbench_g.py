@@ -3,6 +3,7 @@ import Text as txt
 import Helpy as hlp
 import Email_box as e_box
 import os
+import curses
 
 class workbench: # Класс рабочего стола тут соеденяются сам игровой стол, ноутбук, типо почты и виртуальный помощьник
     def __init__(self, number = 0, starts_number = 0, save_message = ""):
@@ -12,9 +13,8 @@ class workbench: # Класс рабочего стола тут соеденя�
 
     def bench(self): # Цикл рабочего стола
         while True:
-            print("Your work bench:")
             if e_box.message_see(self.number) == False:
-                print("[1]Laptop\n[2]Messages\n[3]") # Состояние без сообщения
+                curses.wrapper(lambda stdscr: hlp.main(stdscr, txt.workbench_main, 0, "Your work bench:", 0, 1, True)) # Состояние без сообщения
             else:
                 print("[1]Laptop\n[2]Messages-!1!\n[3]") # Состояние с сообщением
             choise_in_bench = int(input("-->")) # Выбор действия
