@@ -1,5 +1,5 @@
 History = "Здравия желаю, я как понял ты новый работник нашей организации O.O.P.S.\nи ближайщие 10 дней ты будешь выполнять задачи что тебе будут приходить.Давай я тебе озвучу твои их .\nБудь осторожен ведь кто знает что ты встретишь."
-laptop_documentation = "[1]Save objects\n[2]Странные обьекты\n[3]Обьекты класса удержания\n[4]O.O.P.S objects\n[5]<--EXIT"
+laptop_documentation = ["[1]Save objects", "[2]Странные обьекты", "[3]Обьекты класса удержания", "[4]O.O.P.S objects", "[5]<--EXIT"]
 rules = "Внимание если ты это читаешь это значит что ты отвественнен.Правила что ты некогда не должен нарушать:\n[1]Будь внимателен\n[2]Смотри на детали\n[3]Принимай максимально взвешанное решение\n[4]<--EXIT"
 
 messages_safe = {1: "Пропавшие обьекты", 2: "Резкое похолодание", 3: "Странные звуки",
@@ -10,12 +10,14 @@ messages_ocs = {1: "1", 2: "", 3: "", 4: "", 5: "", 6: "", 7: "", 8: "", 9: "", 
 messages_OOPS = {1: "", 2: "", 3: "", 4: "", 5: "", 6: "", 7: "", 8: "", 9: "", 10: ""}
 messages_names = ("messages_safe", "messages_str", "messages_ocs", "messages_OOPS")
 
-city_places = ["sector_1a[1a]", "sector_2a[2a]", "sector_3a[3a]", "sector_4a[4a]", "sector_5a[5a]",
-               "sector_1b[1b]", "sector_2b[2b]", "sector_3b[3b]", "sector_4b[4b]", "sector_5b[5b]",
-               "sector_1c[1c]", "sector_2c[2c]", "sector_3c[3c]", "sector_4c[4c]", "sector_5c[5c]",
-               "sector_1d[1d]", "sector_2d[2d]", "sector_3d[3d]", "sector_4d[4d]", "sector_5d[5d]",
-               "city_center[cc]", "Hospital[hl]", "Police[pl]", "Your_base[yb]"]
+city_places = ["sector_1a", "sector_2a", "sector_3a", "sector_4a", "sector_5a",
+               "sector_1b", "sector_2b", "sector_3b", "sector_4b", "sector_5b",
+               "sector_1c", "sector_2c", "sector_3c", "sector_4c", "sector_5c",
+               "sector_1d", "sector_2d", "sector_3d", "sector_4d", "sector_5d",
+               "city_center", "Hospital", "Police", "Your_base", "UwU"]
 
 Oopy_help_list = ["/", "/", "/"]
 
 workbench_main = ["[1]Laptop", " [2]Messages", "  [3]"]
+workbench_main_with_message = ["[1]Laptop", " [2]Messages-!1!", "  [3]"]
+laptop_main = ["[1]Documentation", "[2]Rules", "[3]Cities_map", "[4]O.O.P.Y", "[X]<--EXIT"]
