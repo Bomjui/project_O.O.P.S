@@ -11,7 +11,7 @@ class Game_days_live: #Класс дней, счёт дней, цикл игры
 
     def Days_live(self):
         curses.wrapper(lambda stdscr: history_printer(stdscr, txt.History, 4))
-        print(f"День - {self.count_day}") #Счёт прожитых дней
+        curses.wrapper(lambda stdscr: history_printer(stdscr, f"День - {self.count_day}", 2))
         self.work.bench() # Запуск рабочего стола
         
 Game = Game_days_live(1)

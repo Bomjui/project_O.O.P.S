@@ -36,6 +36,7 @@ def history_printer(stdscr, txt, string):
             stdscr.clear()
             break
 
+
 def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False):
     cursor_off()
     while True:
@@ -63,11 +64,9 @@ def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, d
 
         elif key in (10, 13):
             stdscr.clear()
-            stdscr.addstr(0, 0, f"Ты выбрал: {options[index]}")
             stdscr.refresh()
-            stdscr.getch()
             cursor_on()
-            break
+            return options[index]
 def for_i_help(arr):
     a = []
     for i in arr.values():
@@ -84,8 +83,16 @@ def for_printer(arr, numbers_paste = False):
             count += 1
             print(f"{count}: {i}")
 
-def random_choiser(arr):
+def random_choicer(arr):
     return choices(arr)
 
-options = ["A", "B", "C", "D", "E", "F"]
-index = 0
+def city_map_printer(arr, n):
+    count = 0
+    for i in arr:
+        if count == n:
+            count = 1
+            print(f"\n{i}", end="  ")
+        else:
+            count += 1
+            print(i, end="  ")
+
