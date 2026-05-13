@@ -2,6 +2,7 @@ import Text as txt
 from workbench_g import workbench
 from Helpy import history_printer
 import curses
+import time
 
 class Game_days_live: #Класс дней, счёт дней, цикл игры самой одним словом
     
@@ -11,7 +12,8 @@ class Game_days_live: #Класс дней, счёт дней, цикл игры
 
     def Days_live(self):
         curses.wrapper(lambda stdscr: history_printer(stdscr, txt.History, 4))
-        curses.wrapper(lambda stdscr: history_printer(stdscr, f"День - {self.count_day}", 2))
+        print(f"День {self.count_day}")
+        time.sleep(2)
         self.work.bench() # Запуск рабочего стола
         
 Game = Game_days_live(1)

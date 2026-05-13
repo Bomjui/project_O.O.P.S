@@ -39,9 +39,9 @@ def history_printer(stdscr, txt, string):
 
 def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False):
     cursor_off()
+    stdscr.clear()
     while True:
         stdscr.clear()
-
         if up == True:
             stdscr.addstr(up_text)
 
