@@ -106,19 +106,24 @@ def city_main(stdscr, options, index, indey, string): # This city plan printer w
 
         if key in (ord("w"), ord("W")):
             index = (index - 1) % len(options)
+            if index == 0:
+                index = 0
+
 
         elif key in (ord("s"), ord("S")):
             index = (index + 1) % len(options)
+            if index == 4:
+                index = 4
 
         elif key in (ord("d"), ord("D")):
-            indey = (indey + 1) % len(options)
+            indexy = (index + 1) % len(options)
             if count >= 4:
                 count = 4
             else:
                 count += 1
 
         elif key in (ord("a"), ord("A")):
-            indey = (indey - 1) % len(options)
+            indexy = (index - 1) % len(options)
             if count == 0:
                 count = 0
             else:

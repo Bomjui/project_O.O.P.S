@@ -1,19 +1,21 @@
 import time
 import Text as txt
 import Helpy as hlp
-import Email_box as e_box
+import City_place_sectors_happen as cpsh
 import os
 import curses
 
 class workbench: # Класс рабочего стола тут соеденяются сам игровой стол, ноутбук, типо почты и виртуальный помощьник
-    def __init__(self, number = 0, starts_number = 0, save_message = "", frames=""):
+    def __init__(self, number_message = 0, number_sectors = 0, save_message_sectors = "", starts_number = 0, save_message = "", frames=""):
         self.starts_number = starts_number
         self.save_message = save_message
-        self.number = number
+        self.number_message = number_message
+        self.save_message_sectors = save_message_sectors
+        self.number_sectors = number_sectors
         self.frames = frames
     def bench(self): # Цикл рабочего стола
         while True:
-            if e_box.message_see(self.number) == False:
+            if cpsh.message_see(self.number_message) == False:
                 main_bench_choice = curses.wrapper(lambda stdscr: hlp.main(stdscr, txt.workbench_main, 0, "Your work bench:", 0, 1, True)) # Состояние без сообщения
             else:
                 main_bench_choice = curses.wrapper(lambda stdscr: hlp.main(stdscr, txt.workbench_main_with_message, 0, "Your work bench:", 0, 1, True))# Состояние с сообщением
@@ -21,8 +23,7 @@ class workbench: # Класс рабочего стола тут соеденя�
                 os.system('cls')
                 self.laptop()
             elif main_bench_choice == txt.workbench_main[1] or main_bench_choice == txt.workbench_main_with_message[1]:
-                os.system('cls')
-                self.save_message, self.number = e_box.message(self.number, self.save_message)
+                self.save_message, self.number_message = None, None
 
     def laptop(self):
         while True:
@@ -42,16 +43,25 @@ class workbench: # Класс рабочего стола тут соеденя�
                 os.system('cls')
                 self.rules()
             elif laptop_main_choice == txt.laptop_main[2]:
-                a = self.cities_map()
-                while a != txt.city_places[24]:
-                    print(f"Your choice {a}")
-                    a = int(input())
-                    if a == 0:
+                city_main_map = self.cities_map()
+                while city_main_map != txt.city_places[24]:
+                    os.system('cls')
+                    if 1 in txt.city_place_message_save[city_main_map]:
+                        self.number_sectors = 1
+                        self.save_message_sectors = txt.city_place_message_save[city_main_map][1]
+                    else:
+                        self.number_sectors = 0
+                    self.save_message_sectors, self.number_sectors, action = cpsh.message(self.number_sectors, self.save_message_sectors, city_main_map)
+
+                    txt.city_place_message_save[city_main_map] = [1, self.save_message_sectors]
+
+                    if action == True:
                         break
-            elif laptop_main_choice == txt.laptop_main[3]:
+            elif laptop_main_choice == txt.laptop_main[4]:
                 while True:
                     print("News")
                     time.sleep(2)
+                    break
             else:
                 os.system('cls')
                 break
@@ -79,8 +89,8 @@ class workbench: # Класс рабочего стола тут соеденя�
 
     def cities_map(self):
         while True:
-            a = curses.wrapper(lambda stdscr: hlp.city_main(stdscr, txt.city_places, 0, 0, 0))
-            return a
+            city_main_map = curses.wrapper(lambda stdscr: hlp.city_main(stdscr, txt.city_places, 0, 0, 0))
+            return city_main_map
     def O_O_P_Y(self):
         pass
         

@@ -23,3 +23,9 @@ workbench_main_with_message = ["[1]Laptop", " [2]Messages-!1!", "  [3]Game Boy"]
 laptop_main = ["[1]Documentation", "[2]Rules", "[3]Cities_map", "[4]O.O.P.Y", "[5]News", "[X]EXIT"]
 
 Game_boy_main = ["[1]Snake", "[2]Car road simulator[CRS]", "[3]Cyberpank2077"]
+
+city_place_message_save = {"sector_1a": [], "sector_2a": [], "sector_3a": [], "sector_4a": [], "sector_5a": [],
+               "sector_1b": [], "sector_2b": [], "sector_3b": [], "sector_4b": [], "sector_5b": [],
+               "sector_1c": [], "sector_2c": [], "sector_3c": [], "sector_4c": [], "sector_5c": [],
+               "sector_1d": [], "sector_2d": [], "sector_3d": [], "sector_4d": [], "sector_5d": [],
+               "city_center": [], "Hospital": [], "Police": [], "Your_base": []}

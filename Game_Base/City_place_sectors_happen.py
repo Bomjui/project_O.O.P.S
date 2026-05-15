@@ -1,20 +1,19 @@
 from random import choice
 import time
-import os
 import Text as txt
 import Helpy as hlp
 import curses
 
-def message(number, save_message):
+def message(number, save_message, place):
     arr = []
     if number == 0:
         for i in range(0, 500):
             arr.append(i)
     time.sleep(1)
     if number == 1:
-        message_main = curses.wrapper(lambda stdscr: hlp.main(stdscr, [save_message, "[X]EXIT"], 0, "Messager", 0, 1, True))
+        message_main = curses.wrapper(lambda stdscr: hlp.main(stdscr, [save_message, "[X]EXIT"], 0, f"----[O.O.P.S.Y]---- in [{place}]", 0, 1, True), )
         if message_main == "[X]EXIT":
-            return save_message, number
+            return save_message, number, True
     elif number == 0:
         if choice(arr) <= 250:
             number += 1
@@ -22,9 +21,9 @@ def message(number, save_message):
         elif choice(arr) <= 500:
             number += 1
             save_message = choice(hlp.for_i_help(txt.messages_safe))
-        message_main = curses.wrapper(lambda stdscr: hlp.main(stdscr, [save_message, "[X]EXIT"], 0, "Messager", 0, 1, True))
+        message_main = curses.wrapper(lambda stdscr: hlp.main(stdscr, [save_message, "[X]EXIT"], 0, f"----[O.O.P.S.Y]---- in [{place}]", 0, 1, True))
         if message_main == "[X]EXIT":
-            return save_message, number
+            return save_message, number, True
 
 def message_see(number):
     if number == 1:
