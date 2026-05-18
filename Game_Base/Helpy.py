@@ -1,7 +1,7 @@
 from random import choices
 import sys
 import time
-import curses
+import Text as txt
 
 def cursor_off():
     sys.stdout.write("\033[?25l")
@@ -39,7 +39,6 @@ def history_printer(stdscr, txt, string):
 
 def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False):
     cursor_off()
-    stdscr.clear()
     while True:
         stdscr.clear()
         if up == True:
@@ -68,12 +67,13 @@ def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, d
             cursor_on()
             return options[index]
 
-def city_main(stdscr, options, index, indey, string): # This city plan printer with choice object
+def city_main(stdscr, options, index, string, up=False, up_text=""): # This city plan printer with choice object
     cursor_off()
     count = 0
     while True:
         stdscr.clear()
-
+        if up == True:
+            stdscr.addstr(up_text)
 
         gen = city_tkinter(options, 5) #
         a = next(gen)
@@ -105,25 +105,25 @@ def city_main(stdscr, options, index, indey, string): # This city plan printer w
         key = stdscr.getch()
 
         if key in (ord("w"), ord("W")):
-            index = (index - 1) % len(options)
             if index == 0:
                 index = 0
+            else:
+                index -= 1
 
 
         elif key in (ord("s"), ord("S")):
-            index = (index + 1) % len(options)
-            if index == 4:
+            if index >= 4:
                 index = 4
+            else:
+                index += 1
 
         elif key in (ord("d"), ord("D")):
-            indexy = (index + 1) % len(options)
             if count >= 4:
                 count = 4
             else:
                 count += 1
 
         elif key in (ord("a"), ord("A")):
-            indexy = (index - 1) % len(options)
             if count == 0:
                 count = 0
             else:
@@ -143,6 +143,19 @@ def city_main(stdscr, options, index, indey, string): # This city plan printer w
                 return d[index]
             elif count == 4:
                 return e[index]
+
+def OPPY_main(choice=False):
+    while True:
+        print(txt.Oopy_input_message[0])
+        while True:
+            player_input = input()
+            if player_input in txt.Oopy_help_list:
+                break
+        if player_input == txt.Oopy_help_list[0]:
+            for i in range(len(txt.Oopy_help_list)):
+                print(txt.Oopy_help_list[i], end=", ")
+
+
 
 def for_i_help(arr):
     a = []
