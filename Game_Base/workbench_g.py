@@ -2,8 +2,10 @@ import time
 import Text as txt
 import Helpy as hlp
 import City_place_sectors_happen as cpsh
+import OOPY
 import os
 import curses
+
 
 class workbench: # Класс рабочего стола тут соеденяются сам игровой стол, ноутбук, типо почты и виртуальный помощьник
     def __init__(self, number_message = 0, number_sectors = 0, save_message_sectors = "", starts_number = 0, save_message = "", frames=""):
@@ -96,6 +98,6 @@ class workbench: # Класс рабочего стола тут соеденя�
                                                                         True, "---[City plan]------------------------------------------------------------------------------"))
             return city_main_map
     def O_O_P_Y(self):
-        oopy_main = hlp.OPPY_main()
+        oopy_main = OOPY.OPPY_main()
         
         

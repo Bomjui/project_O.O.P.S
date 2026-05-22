@@ -16,7 +16,7 @@ city_places = ["sector_1a", "sector_2a", "sector_3a", "sector_4a", "sector_5a",
                "sector_1d", "sector_2d", "sector_3d", "sector_4d", "sector_5d",
                "city_center", "Hospital", "Police", "Your_base", "[X]EXIT"]
 
-Oopy_help_list = ["/helpy", "/printo", "/inputo", "/"]
+Oopy_help_list = ["/helpy", "/printo", "/inputo", "/function base", "/debug_menu"]
 Oopy_input_message = ["Здравия желаю! Моё имя [O.O.P.Y]. Готов помочь в любую минуту... [/helpy]<-- Для просмотра всех функций"]
 
 workbench_main = ["[1]Laptop", " [2]Messages", "  [3]Game Boy"]

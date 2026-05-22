@@ -1,7 +1,6 @@
 from random import choices
 import sys
 import time
-import Text as txt
 
 def cursor_off():
     sys.stdout.write("\033[?25l")
@@ -23,13 +22,14 @@ def animation_terminal(n, arr, tm, done_showing = False):
             time.sleep(tm)
             delete_symbol()
     if done_showing == True:
-        print(" done")
+        print(" [done]")
         time.sleep(tm)
         delete_symbol(2)
 
-def history_printer(stdscr, txt, string):
+def history_printer(stdscr, txt, string, printer = True):
     while True:
-        stdscr.addstr(txt)
+        if printer == True:
+            stdscr.addstr(txt)
         stdscr.addstr(string, 0, "Нажми Enter чтобы продолжить")
         key = stdscr.getch()
         if key in (10, 13):
@@ -143,20 +143,6 @@ def city_main(stdscr, options, index, string, up=False, up_text=""): # This city
                 return d[index]
             elif count == 4:
                 return e[index]
-
-def OPPY_main(choice=False):
-    while True:
-        print(txt.Oopy_input_message[0])
-        while True:
-            player_input = input()
-            if player_input in txt.Oopy_help_list:
-                break
-        if player_input == txt.Oopy_help_list[0]:
-            for i in range(len(txt.Oopy_help_list)):
-                print(txt.Oopy_help_list[i], end=", ")
-
-
-
 def for_i_help(arr):
     a = []
     for i in arr.values():
