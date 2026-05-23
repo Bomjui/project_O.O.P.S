@@ -10,8 +10,8 @@ def cursor_on():
     sys.stdout.write("\033[?25h")
     sys.stdout.flush()
 
-def delete_symbol(n = 1):
-    sys.stdout.write("\b \b" * n)
+def delete_symbol():
+    sys.stdout.write("\b \b")
     sys.stdout.flush()
 
 def animation_terminal(n, arr, tm, done_showing = False):
@@ -24,18 +24,20 @@ def animation_terminal(n, arr, tm, done_showing = False):
     if done_showing == True:
         print(" [done]")
         time.sleep(tm)
-        delete_symbol(2)
+        delete_symbol()
 
-def history_printer(stdscr, txt, string, printer = True):
+def history_printer(stdscr, txt, string, printer = True, enter_press = True):
     while True:
         if printer == True:
             stdscr.addstr(txt)
-        stdscr.addstr(string, 0, "Нажми Enter чтобы продолжить")
-        key = stdscr.getch()
-        if key in (10, 13):
-            stdscr.clear()
+        if enter_press == True:
+            stdscr.addstr(string, 0, "Нажми Enter чтобы продолжить")
+            key = stdscr.getch()
+            if key in (10, 13):
+                stdscr.clear()
+                break
+        else:
             break
-
 
 def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False):
     cursor_off()
@@ -143,6 +145,74 @@ def city_main(stdscr, options, index, string, up=False, up_text=""): # This city
                 return d[index]
             elif count == 4:
                 return e[index]
+
+def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
+    cursor_off()
+    count = 0
+    a, b, c, d, e = 0, 20, 40, 60, 80
+    button = "next[>]"
+    while True:
+        stdscr.clear()
+        if up == True:
+            stdscr.addstr(up_text)
+
+        for i, option in enumerate(options):
+            if count == 0 and i == 0:
+                stdscr.clear()
+                stdscr.addstr(string + i, 0, f"{options[0]} <--    \t    {options[1]}   \t        {options[2]}   \t    {options[3]}\t{button}")
+            elif count == 1 and i == 0:
+                stdscr.clear()
+                stdscr.addstr(string + i, 0, f"{options[0]}    \t    {options[1]} <--         {options[2]} \t    {options[3]}\t{button}")
+            elif count == 2 and i == 0:
+                stdscr.clear()
+                stdscr.addstr(string + i, 0, f"{options[0]}    \t    {options[1]}   \t        {options[2]} <--   \t    {options[3]}\t{button}")
+            elif count == 3 and i == 0:
+                stdscr.clear()
+                stdscr.addstr(string + i, 0, f"{options[0]}    \t    {options[1]}   \t        {options[2]}   \t    {options[3]} <-- \t{button}")
+            elif count == 4 and i == 0:
+                stdscr.clear()
+                stdscr.addstr(string + i, 0, f"{options[0]}    \t    {options[1]}   \t        {options[2]}   \t    {options[3]}\t{button} <--")
+
+            else:
+                stdscr.addstr(string, a, options[0])
+                stdscr.addstr(string, b, options[1])
+                stdscr.addstr(string, c, options[2])
+                stdscr.addstr(string, d, options[3])
+                stdscr.addstr(string, e, button)
+
+        key = stdscr.getch()
+
+        if key in (ord("d"), ord("D")):
+            if count >= 4:
+                count = 4
+            else:
+                count += 1
+
+        elif key in (ord("a"), ord("A")):
+            if count == 0:
+                count = 0
+            else:
+                count -= 1
+
+        elif key in (10, 13):
+            stdscr.clear()
+            stdscr.refresh()
+            cursor_on()
+            if count == 0:
+                return options[0]
+            elif count == 1:
+                return options[1]
+            elif count == 2:
+                return options[2]
+            elif count == 3:
+                return options[3]
+            elif count == 4:
+                options = options[4:]
+                if len(options) < 5:
+                    for _ in range(5-len(options)):
+                        options.append("Soon")
+                    button = "[<]back"
+                    a, b, c, d, e = 0, 20, 38, 42, 64
 def for_i_help(arr):
     a = []
     for i in arr.values():
