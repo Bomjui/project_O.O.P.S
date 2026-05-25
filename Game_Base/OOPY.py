@@ -38,14 +38,10 @@ def OPPY_main(choice=False):
                 break
         if player_input == txt.Oopy_help_list[0]:
             OOPY_animation()
-            back_main = curses.wrapper(
-                lambda stdscr: hlp.history_printer(stdscr,
-                            f"O.O.P.S[sys]/terminal >>> Список всех функций: {str(txt.Oopy_help_list)}", 1, True, False))
+            print(f"O.O.P.S[sys]/terminal >>> Список всех функций: {str(txt.Oopy_help_list)}")
 
         elif result == txt.Oopy_help_list[1]:
             OOPY_animation()
-            back_main = curses.wrapper(
-                lambda stdscr: hlp.history_printer(stdscr, f"O.O.P.S[sys]/terminal >>> {save}",  1, True, False))
             print(f"O.O.P.S[sys]/terminal >>> {save}")
         elif result == txt.Oopy_help_list[2]:
             OOPY_animation()
@@ -61,7 +57,20 @@ def OPPY_main(choice=False):
             OOPY_animation()
             back_main = curses.wrapper(
                 lambda stdscr:
-                hlp.OOPY_CHOICE_Function(stdscr, txt.Oopy_help_list, 0, 1))
+                hlp.OOPY_CHOICE_Function(stdscr, txt.Oopy_help_list, 0, 1,
+                True, "O.O.P.S[sys]/terminal >>> Function list <<<"))
+            if back_main == txt.Oopy_help_list[1]:
+                print(f"O.O.P.S[sys]/terminal >>>")
+            elif back_main == txt.Oopy_help_list[2]:
+                print(f"O.O.P.S[sys]/terminal >>>")
+            elif back_main == txt.Oopy_help_list[3]:
+                print(f"O.O.P.S[sys]/terminal >>>")
+            elif back_main == txt.Oopy_help_list[4]:
+                print(f"O.O.P.S[sys]/terminal >>>")
+            elif back_main == txt.Oopy_help_list[5]:
+                print(f"O.O.P.S[sys]/terminal >>>")
+        elif player_input == "/exit":
+            break
 
 
 

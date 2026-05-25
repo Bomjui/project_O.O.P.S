@@ -1,7 +1,7 @@
 from random import choices
 import sys
 import time
-
+from Text import Oopy_help_list
 def cursor_off():
     sys.stdout.write("\033[?25l")
     sys.stdout.flush()
@@ -149,7 +149,7 @@ def city_main(stdscr, options, index, string, up=False, up_text=""): # This city
 def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
     cursor_off()
     count = 0
-    a, b, c, d, e = 0, 20, 40, 60, 80
+    a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
     button = "next[>]"
     while True:
         stdscr.clear()
@@ -159,26 +159,26 @@ def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
         for i, option in enumerate(options):
             if count == 0 and i == 0:
                 stdscr.clear()
-                stdscr.addstr(string + i, 0, f"{options[0]} <--    \t    {options[1]}   \t        {options[2]}   \t    {options[3]}\t{button}")
+                stdscr.addstr(string + i, 0, f"{options[0]} <-- {options[1]}     {options[2]}     {options[3]}     {button}")
             elif count == 1 and i == 0:
                 stdscr.clear()
-                stdscr.addstr(string + i, 0, f"{options[0]}    \t    {options[1]} <--         {options[2]} \t    {options[3]}\t{button}")
+                stdscr.addstr(string + i, 0, f"{options[0]}     {options[1]} <-- {options[2]}     {options[3]}     {button}")
             elif count == 2 and i == 0:
                 stdscr.clear()
-                stdscr.addstr(string + i, 0, f"{options[0]}    \t    {options[1]}   \t        {options[2]} <--   \t    {options[3]}\t{button}")
+                stdscr.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]} <-- {options[3]}     {button}")
             elif count == 3 and i == 0:
                 stdscr.clear()
-                stdscr.addstr(string + i, 0, f"{options[0]}    \t    {options[1]}   \t        {options[2]}   \t    {options[3]} <-- \t{button}")
+                stdscr.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]}     {options[3]} <-- {button}")
             elif count == 4 and i == 0:
                 stdscr.clear()
-                stdscr.addstr(string + i, 0, f"{options[0]}    \t    {options[1]}   \t        {options[2]}   \t    {options[3]}\t{button} <--")
+                stdscr.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]}     {options[3]}     {button} <--")
 
             else:
-                stdscr.addstr(string, a, options[0])
-                stdscr.addstr(string, b, options[1])
-                stdscr.addstr(string, c, options[2])
-                stdscr.addstr(string, d, options[3])
-                stdscr.addstr(string, e, button)
+                stdscr.addstr(string, 0, options[0])
+                stdscr.addstr(string, a+5, options[1])
+                stdscr.addstr(string, a+b+10, options[2])
+                stdscr.addstr(string, a+b+c+15, options[3])
+                stdscr.addstr(string, a+b+c+d+20, button)
 
         key = stdscr.getch()
 
@@ -198,21 +198,26 @@ def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
             stdscr.clear()
             stdscr.refresh()
             cursor_on()
-            if count == 0:
-                return options[0]
-            elif count == 1:
-                return options[1]
-            elif count == 2:
-                return options[2]
-            elif count == 3:
-                return options[3]
-            elif count == 4:
-                options = options[4:]
-                if len(options) < 5:
+            if options[count] != "Soon":
+                if count == 0:
+                    return options[0]
+                elif count == 1:
+                    return options[1]
+                elif count == 2:
+                    return options[2]
+                elif count == 3:
+                    return options[3]
+                elif count == 4:
+                    options = options[4:]
+                if len(options) < 5 and button == "next[>]":
                     for _ in range(5-len(options)):
                         options.append("Soon")
                     button = "[<]back"
-                    a, b, c, d, e = 0, 20, 38, 42, 64
+                elif button == "[<]back":
+                    options = Oopy_help_list
+                    button = "next[>]"
+                a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
+                count = 0
 def for_i_help(arr):
     a = []
     for i in arr.values():
