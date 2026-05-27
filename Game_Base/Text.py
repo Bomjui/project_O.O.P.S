@@ -17,7 +17,9 @@ city_places = ["sector_1a", "sector_2a", "sector_3a", "sector_4a", "sector_5a",
                "city_center", "Hospital", "Police", "Your_base", "[X]EXIT"]
 
 Oopy_help_list = ["/helpy", "/printo", "/inputo", "/function base", "/debug_menu", "/exit"]
-Oopy_function_description = []
+Oopy_function_description = ["Список всех функций что вы можете написать", "Вывод текста на экран: /printo(Text here)",
+                             "Позволяет вводить в консоль данные: /inputo(Pr) after Pr = /printo(Enter what is text be in Pr",
+                             "Вывод всей информации про функции", "Среда для программирования", "Выход"]
 Oopy_input_message = ["Здравия желаю! Моё имя [O.O.P.Y]. Готов помочь в любую минуту... [/helpy]<-- Для просмотра всех функций"]
 
 workbench_main = ["[1]Laptop", " [2]Messages", "  [3]Game Boy"]

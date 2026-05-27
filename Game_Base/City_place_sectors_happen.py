@@ -12,10 +12,15 @@ def message(number, save_message, place):
     time.sleep(1)
     if number == 1:
         message_main = curses.wrapper(lambda stdscr:
-                    hlp.main(stdscr, [save_message, "[X]EXIT"], 0, f"----[O.O.P.S.Y]---- in [{place}]",
+                    hlp.main(stdscr, [save_message, "[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0,
+                             f"----[O.O.P.S.Y]---- in [{place}]",
                              0, 1, True), )
         if message_main == "[X]EXIT":
             return save_message, number, True
+        elif message_main == "[X]EXIT":
+            return save_message, number, False
+        else:
+            return save_message, number, "I always come BACK!"
     elif number == 0:
         if choice(arr) <= 250:
             number += 1
@@ -24,10 +29,14 @@ def message(number, save_message, place):
             number += 1
             save_message = choice(hlp.for_i_help(txt.messages_safe))
         message_main = curses.wrapper(lambda stdscr:
-                        hlp.main(stdscr, [save_message, "[X]EXIT"], 0, f"----[O.O.P.S.Y]---- in [{place}]",
+                        hlp.main(stdscr, [save_message, "[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0, f"----[O.O.P.S.Y]---- in [{place}]",
                                  0, 1, True))
         if message_main == "[X]EXIT":
             return save_message, number, True
+        elif message_main == "[X]EXIT":
+            return save_message, number, False
+        else:
+            return save_message, number, "I always come BACK!"
 
 def message_see(number):
     if number == 1:

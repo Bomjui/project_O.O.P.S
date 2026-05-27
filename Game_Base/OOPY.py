@@ -4,14 +4,23 @@ import Helpy as hlp
 import curses
 
 def oppenheimer(player_input, save, result):
-    for i in range(len(player_input)):
-        if player_input[i] == "(" and player_input[len(player_input)-1] == ")":
-            save = str(player_input[i + 1:len(player_input) - 1])
-            result = str(player_input[:i])
-    if "(" not in player_input or ")" not in player_input:
-        return "()", True
-    else:
-        return save, result
+    try:
+        not_symbols = player_input.index("(")
+        if player_input[:not_symbols] in txt.Oopy_help_list:
+            for i in range(len(player_input)):
+                if player_input[i] == "(" and player_input[len(player_input)-1] == ")":
+                    save = str(player_input[i + 1:len(player_input) - 1])
+                    result = str(player_input[:i])
+                if "(" not in player_input or ")" not in player_input:
+                    return "()", True
+                else:
+                    return save, result
+        else:
+            print("O.O.P.S[sys]/terminal >>> This is don't function")
+            return False, False
+    except ValueError:
+        print("O.O.P.S[sys]/terminal >>> This is don't function")
+        return False, False
 
 def OOPY_animation():
     print("O.O.P.S[pl]/terminal >>> Loading..", end="")
@@ -59,16 +68,19 @@ def OPPY_main(choice=False):
                 lambda stdscr:
                 hlp.OOPY_CHOICE_Function(stdscr, txt.Oopy_help_list, 0, 1,
                 True, "O.O.P.S[sys]/terminal >>> Function list <<<"))
-            if back_main == txt.Oopy_help_list[1]:
-                print(f"O.O.P.S[sys]/terminal >>>")
+            if back_main == txt.Oopy_help_list[0]:
+                print(f"O.O.P.S[sys]/terminal >>> {txt.Oopy_help_list[0]} >>> {txt.Oopy_function_description[0]}")
+            elif back_main == txt.Oopy_help_list[1]:
+                print(f"O.O.P.S[sys]/terminal >>> {txt.Oopy_help_list[1]} >>> {txt.Oopy_function_description[1]}")
             elif back_main == txt.Oopy_help_list[2]:
-                print(f"O.O.P.S[sys]/terminal >>>")
+                print(f"O.O.P.S[sys]/terminal >>> {txt.Oopy_help_list[2]} >>> {txt.Oopy_function_description[2]}")
             elif back_main == txt.Oopy_help_list[3]:
-                print(f"O.O.P.S[sys]/terminal >>>")
+                print(f"O.O.P.S[sys]/terminal >>> {txt.Oopy_help_list[3]} >>> {txt.Oopy_function_description[3]}")
             elif back_main == txt.Oopy_help_list[4]:
-                print(f"O.O.P.S[sys]/terminal >>>")
-            elif back_main == txt.Oopy_help_list[5]:
-                print(f"O.O.P.S[sys]/terminal >>>")
+                print(f"O.O.P.S[sys]/terminal >>> {txt.Oopy_help_list[4]} >>> {txt.Oopy_function_description[4]}")
+        elif player_input == txt.Oopy_help_list[4]:
+            while True:
+                pass
         elif player_input == "/exit":
             break
 

@@ -207,9 +207,9 @@ def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
                     return options[2]
                 elif count == 3:
                     return options[3]
-                elif count == 4:
+            if count == 4:
+                if button == "next[>]":
                     options = options[4:]
-                if len(options) < 5 and button == "next[>]":
                     for _ in range(5-len(options)):
                         options.append("Soon")
                     button = "[<]back"
