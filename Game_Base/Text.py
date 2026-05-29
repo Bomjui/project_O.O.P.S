@@ -33,3 +33,6 @@ city_place_message_save = {"sector_1a": [], "sector_2a": [], "sector_3a": [], "s
                "sector_1c": [], "sector_2c": [], "sector_3c": [], "sector_4c": [], "sector_5c": [],
                "sector_1d": [], "sector_2d": [], "sector_3d": [], "sector_4d": [], "sector_5d": [],
                "city_center": [], "Hospital": [], "Police": [], "Your_base": []}
+
+creatures_names = {"police": [100, 10, 15, 0], "trained police": [120, 10, 25, 0], "soldier": [150, 12, 35, 5],
+                   "special soldier": [200, 8, 50, 20], "O.O.P.E.R.S": [1000, 5, 100, 100]}

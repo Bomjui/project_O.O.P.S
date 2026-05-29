@@ -17,7 +17,7 @@ def message(number, save_message, place):
                              0, 1, True), )
         if message_main == "[X]EXIT":
             return save_message, number, True
-        elif message_main == "[X]EXIT":
+        elif message_main == "[<]BACK":
             return save_message, number, False
         else:
             return save_message, number, "I always come BACK!"
@@ -33,7 +33,7 @@ def message(number, save_message, place):
                                  0, 1, True))
         if message_main == "[X]EXIT":
             return save_message, number, True
-        elif message_main == "[X]EXIT":
+        elif message_main == "[<]BACK":
             return save_message, number, False
         else:
             return save_message, number, "I always come BACK!"

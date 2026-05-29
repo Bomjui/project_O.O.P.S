@@ -7,14 +7,12 @@ def oppenheimer(player_input, save, result):
     try:
         not_symbols = player_input.index("(")
         if player_input[:not_symbols] in txt.Oopy_help_list:
-            for i in range(len(player_input)):
-                if player_input[i] == "(" and player_input[len(player_input)-1] == ")":
-                    save = str(player_input[i + 1:len(player_input) - 1])
-                    result = str(player_input[:i])
-                if "(" not in player_input or ")" not in player_input:
-                    return "()", True
-                else:
-                    return save, result
+            if player_input[not_symbols] == "(" and player_input[len(player_input)-1] == ")":
+                save = player_input[not_symbols + 1:len(player_input) - 1]
+                result = player_input[:not_symbols]
+            if "(" not in player_input or ")" not in player_input:
+                return "()", True
+            return save, result
         else:
             print("O.O.P.S[sys]/terminal >>> This is don't function")
             return False, False
@@ -25,7 +23,7 @@ def oppenheimer(player_input, save, result):
 def OOPY_animation():
     print("O.O.P.S[pl]/terminal >>> Loading..", end="")
     hlp.animation_terminal(2, ("O", "O", "P", "Y"), 0.3, True)
-def OPPY_main(choice=False):
+def OPPY_main():
     starting_message = 0
     while True:
         if starting_message == 0:
@@ -61,7 +59,6 @@ def OPPY_main(choice=False):
                 print(f"O.O.P.S[sys]/terminal >>> {save} == {save_printo}")
             else:
                 print(f"O.O.P.S[sys]/terminal >>> Syntaxis error {result} <-- is not /printo")
-            time.sleep(2)
         elif player_input == txt.Oopy_help_list[3]:
             OOPY_animation()
             back_main = curses.wrapper(
@@ -80,7 +77,7 @@ def OPPY_main(choice=False):
                 print(f"O.O.P.S[sys]/terminal >>> {txt.Oopy_help_list[4]} >>> {txt.Oopy_function_description[4]}")
         elif player_input == txt.Oopy_help_list[4]:
             while True:
-                pass
+                break
         elif player_input == "/exit":
             break
 
