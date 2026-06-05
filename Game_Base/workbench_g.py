@@ -5,7 +5,7 @@ import City_place_sectors_happen as cpsh
 import OOPY
 import os
 import curses
-
+from Creatures import path
 
 class workbench: # Класс рабочего стола тут соеденяются сам игровой стол, ноутбук, типо почты и виртуальный помощьник
     def __init__(self, number_message = 0, number_sectors = 0, save_message_sectors = "", starts_number = 0, save_message = "", frames=""):
@@ -15,7 +15,8 @@ class workbench: # Класс рабочего стола тут соеденя�
         self.save_message_sectors = save_message_sectors
         self.number_sectors = number_sectors
         self.frames = frames
-    def bench(self): # Цикл рабочего стола
+    def bench(self, stdscr): # Цикл рабочего стола
+        curses.curs_set(0)
         while True:
             if cpsh.message_see(self.number_message) == False:
                 main_bench_choice = curses.wrapper(lambda stdscr: hlp.main(stdscr, txt.workbench_main, 0, "Your work bench:", 0, 1, True)) # Состояние без сообщения
@@ -28,6 +29,7 @@ class workbench: # Класс рабочего стола тут соеденя�
                 self.save_message, self.number_message = None, None
 
     def laptop(self):
+        curses.curs_set(0)
         while True:
             os.system('cls')
             self.frames = ["|", "/", "--", "\\"]
@@ -63,6 +65,8 @@ class workbench: # Класс рабочего стола тут соеденя�
                         city_main_map = self.cities_map()
                     else:
                         pass
+                        city_distance = curses.wrapper(lambda stdscr: hlp.city_distances(stdscr, txt.city_places, 0, 1, path,
+                                                                        True, "---[City plan]------------------------------------------------------------------------------"))
             elif laptop_main_choice == txt.laptop_main[3]:
                 os.system('cls')
                 self.O_O_P_Y()
@@ -76,7 +80,7 @@ class workbench: # Класс рабочего стола тут соеденя�
                 break
 
     def rules(self):
-        hlp.cursor_off()
+        curses.curs_set(0)
         print("Opening rules", end="")
         hlp.animation_terminal(2, self.frames, 0.1, True)
         hlp.cursor_on()
@@ -86,7 +90,7 @@ class workbench: # Класс рабочего стола тут соеденя�
         0, 1,True))
         
     def documentation(self):
-        hlp.cursor_off()
+        curses.curs_set(0)
         print("Opening documentation ", end="")
         hlp.animation_terminal(5, self.frames, 0.3, True)
         hlp.cursor_on()
@@ -98,6 +102,7 @@ class workbench: # Класс рабочего стола тут соеденя�
                 break
 
     def cities_map(self):
+        curses.curs_set(0)
         while True:
             city_main_map = curses.wrapper(lambda stdscr: hlp.city_main(stdscr, txt.city_places, 0, 1,
                                                                         True, "---[City plan]------------------------------------------------------------------------------"))

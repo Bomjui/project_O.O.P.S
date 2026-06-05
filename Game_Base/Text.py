@@ -34,5 +34,30 @@ city_place_message_save = {"sector_1a": [], "sector_2a": [], "sector_3a": [], "s
                "sector_1d": [], "sector_2d": [], "sector_3d": [], "sector_4d": [], "sector_5d": [],
                "city_center": [], "Hospital": [], "Police": [], "Your_base": []}
 
-creatures_names = {"police": [100, 10, 15, 0], "trained police": [120, 10, 25, 0], "soldier": [150, 12, 35, 5],
-                   "special soldier": [200, 8, 50, 20], "O.O.P.E.R.S": [1000, 5, 100, 100]}
+city_place_distance = {"Your_base": {"Police": 30},
+                       "Police": {"Hospital": 10, "sector_3d": 20},
+                       "Hospital": {"city_center": 20, "sector_2d": 20},
+                       "sector_5d": {"sector_4d": 15, "sector_5c": 25},
+                       "sector_4d": {"sector_3d": 15, "sector_4c": 25},
+                       "sector_3d": {"sector_2d": 15, "sector_3c": 25},
+                       "sector_2d": {"sector_1d": 15, "sector_2c": 25},
+                       "sector_1d": {"sector_1c": 25},
+                       "sector_5c": {"sector_4c": 10, "sector_5b": 20},
+                       "sector_4c": {"sector_3c": 10, "sector_4b": 20},
+                       "sector_3c": {"sector_2c": 10, "sector_3b": 20},
+                       "sector_2c": {"sector_1c": 10, "sector_2b": 20},
+                       "sector_1c": {"sector_1b": 20},
+                       "sector_5b": {"sector_4b": 15, "sector_5a": 25},
+                       "sector_4b": {"sector_3b": 15, "sector_4a": 25},
+                       "sector_3b": {"sector_2b": 15, "sector_3a": 25},
+                       "sector_2b": {"sector_1b": 15, "sector_2a": 25},
+                       "sector_1b": {"sector_1a": 25},
+                       "sector_5a": {"sector_4a": 15},
+                       "sector_4a": {"sector_3a": 15},
+                       "sector_3a": {"sector_2a": 15},
+                       "sector_2a": {"sector_1a": 15},
+                       "sector_1a": {"Another_city": 12500}
+                       }
+
+creatures_names = {"police": [100, 10, 15, 0], "Trained_police": [120, 10, 25, 0], "Soldier": [150, 12, 35, 5],
+                   "Special_soldier": [200, 8, 50, 20], "O.O.P.E.R.S": [1000, 5, 100, 100]}

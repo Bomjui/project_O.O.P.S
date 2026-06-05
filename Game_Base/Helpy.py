@@ -2,6 +2,38 @@ from random import choices
 import sys
 import time
 from Text import Oopy_help_list
+import heapq
+
+def dijkstara_with_path(graph, start):
+    distances = {vertex: float("infinity") for vertex in graph}
+    distances[start] = 0
+    predecessors = {}
+    priority_queue = [(0, start)]
+
+    while priority_queue:
+        current_distance, current_vertex = heapq.heappop(priority_queue)
+        if current_distance > distances.get(current_vertex, float("infinity")):
+            continue
+        for neighbor, weight in graph.get(current_vertex, {}).items():
+            distance = current_distance + weight
+            if distance < distances.get(neighbor, float("infinity")):
+                distances[neighbor] = distance
+                predecessors[neighbor] = current_vertex
+                heapq.heappush(priority_queue, (distance, neighbor))
+    return distances, predecessors
+
+def get_exact_path(predecessors, start, target):
+    if target not in predecessors and target != start:
+        return []
+    path = []
+    current = target
+    while current is not None:
+        path.append(current)
+        current = predecessors.get(current)
+    path.reverse()
+    return path
+
+
 def cursor_off():
     sys.stdout.write("\033[?25l")
     sys.stdout.flush()
@@ -37,6 +69,7 @@ def history_printer(stdscr, txt, string, printer = True, enter_press = True):
                 stdscr.clear()
                 break
         else:
+            stdscr.clear()
             break
 
 def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False):
@@ -218,6 +251,60 @@ def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
                     button = "next[>]"
                 a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
                 count = 0
+
+def city_distances(stdscr, options, index, string, distance, up=False, up_text=""): # This city plan printer with choice object
+    cursor_off()
+    stdscr.nodelay(True)
+    nums = city_numbers(options, distance)
+    gens = city_tkinter(nums, 2)
+    while True:
+        try:
+            index, count = next(gens)
+        except StopIteration:
+            index, count = nums[len(distance)-2], nums[len(distance)-1]
+        stdscr.clear()
+        if up == True:
+            stdscr.addstr(up_text)
+
+        gen = city_tkinter(options, 5) #
+        a = next(gen)
+        b = next(gen)
+        c = next(gen)
+        d = next(gen)
+        e = next(gen)
+
+
+        for i, option in enumerate(a):
+            if count == 0 and i == index:
+                stdscr.addstr(string + i, 0, f"{option} <-- \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]}")
+            elif count == 1 and i == index:
+                stdscr.addstr(string + i, 0, f"{option} \t    {b[i]} <--       {c[i]} \t    {d[i]} \t\t{e[i]}")
+            elif count == 2 and i == index:
+                stdscr.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} <-- \t    {d[i]} \t\t{e[i]}")
+            elif count == 3 and i == index:
+                stdscr.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} <-- \t{e[i]}")
+            elif count == 4 and i == index:
+                stdscr.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]} <--")
+
+            else:
+                stdscr.addstr(string + i, 80, e[i])
+                stdscr.addstr(string + i, 60, d[i])
+                stdscr.addstr(string + i, 40, c[i])
+                stdscr.addstr(string + i, 20, b[i])
+                stdscr.addstr(string + i, 0, option)
+
+        stdscr.refresh()
+        time.sleep(1)
+        key = stdscr.getch()
+        if key in (10, 13):
+            stdscr.clear()
+            stdscr.refresh()
+            cursor_on()
+            return index, count
+
+
+
+
 def for_i_help(arr):
     a = []
     for i in arr.values():
@@ -251,3 +338,28 @@ def city_tkinter(data, size):
     for i in range(0, len(data), size):
         yield data[i:i + size]
 
+def city_numbers(options, distance):
+    gen = city_tkinter(options, 5)
+    save = []
+    a = next(gen)
+    b = next(gen)
+    c = next(gen)
+    d = next(gen)
+    e = next(gen)
+    for i in distance:
+        if i in a:
+            num = a.index(i)
+            save += num, 0
+        elif i in b:
+            num = b.index(i)
+            save += num, 1
+        elif i in c:
+            num = c.index(i)
+            save += num, 2
+        elif i in d:
+            num = d.index(i)
+            save += num, 3
+        elif i in e:
+            num = e.index(i)
+            save += num, 4
+    return save
