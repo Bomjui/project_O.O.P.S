@@ -1,7 +1,5 @@
-from Text import creatures_names, city_place_distance
-from Helpy import dijkstara_with_path, get_exact_path
-import Text as txt
-import Helpy as hlp
+from Text import city_place_distance, creatures_names
+from Helpy import dijkstara_with_path, get_exact_path, main
 import curses
 class Creatures:
     def __init__(self, name, hp, speed, attack, armor):
@@ -27,11 +25,8 @@ class Creatures:
 
     def speed_run(self, place):
         pass
-
-
-print(list(creatures_names.keys()))
-Police = Creatures("Police", creatures_names["police"][0], creatures_names["police"][1], creatures_names["police"][2],
-                   creatures_names["police"][3])
+Police = Creatures("Police", creatures_names["Police"][0], creatures_names["Police"][1], creatures_names["Police"][2],
+                   creatures_names["Police"][3])
 Trained_police = Creatures("Trained_police", creatures_names["Trained_police"][0], creatures_names["Trained_police"][1], creatures_names["Trained_police"][2],
                    creatures_names["Trained_police"][3])
 Soldier = Creatures("Soldier", creatures_names["Soldier"][0], creatures_names["Soldier"][1], creatures_names["Soldier"][2],
@@ -40,13 +35,14 @@ Special_soldier = Creatures("Special_soldier", creatures_names["Special_soldier"
                    creatures_names["Special_soldier"][3])
 O_O_P_E_R_S = Creatures("O.O.P.E.R.S", creatures_names["O.O.P.E.R.S"][0], creatures_names["O.O.P.E.R.S"][1], creatures_names["O.O.P.E.R.S"][2],
                    creatures_names["O.O.P.E.R.S"][3])
-target = "sector_2c"
-distances, predecessors = dijkstara_with_path(city_place_distance, "Your_base")
-path = get_exact_path(predecessors, "Your_base", target)
-print(f"Кратчайшее расстояние: {distances.get(target)}")
-print(f"Mаршрут: {' -> '.join(path)}")
-print(path)
-city_distance = curses.wrapper(lambda stdscr: hlp.city_distances(stdscr, txt.city_places, 0, 1, path,
-                                True, "---[City plan]------------------------------------------------------------------------------"))
-
-print(city_distance)
+def paths(target, creatures="", start="Your_base"):
+    if creatures == "Police":
+        start = "Police"
+    distances, predecessors = dijkstara_with_path(city_place_distance, "Your_base")
+    path = get_exact_path(predecessors, start, target)
+    return path
+def Creatures_choice():
+   Creature_choice = curses.wrapper(
+        lambda stdscr: main(stdscr, list(creatures_names.keys()), 0, "Your work bench:",
+                            0, 1, True))
+   return Creature_choice

@@ -4,17 +4,16 @@ import Text as txt
 import Helpy as hlp
 import curses
 
-def message(number, save_message, place):
+def message(number, save_message, place, timer=0):
     arr = []
     if number == 0:
-        for i in range(0, 500):
-            arr.append(i)
+        arr = choice(range(0, 500))
     time.sleep(1)
     if number == 1:
         message_main = curses.wrapper(lambda stdscr:
-                    hlp.main(stdscr, [save_message, "[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0,
-                             f"----[O.O.P.S.Y]---- in [{place}]",
-                             0, 1, True), )
+                    hlp.main(stdscr, ["[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0,
+                             f"----[O.O.P.S.Y]---- in [{place}]\n{save_message}",
+                             0, 2, True, False, timer), )
         if message_main == "[X]EXIT":
             return save_message, number, True
         elif message_main == "[<]BACK":
@@ -22,15 +21,16 @@ def message(number, save_message, place):
         else:
             return save_message, number, "I always come BACK!"
     elif number == 0:
-        if choice(arr) <= 250:
+        if arr <= 250:
             number += 1
             save_message = choice(hlp.for_i_help(txt.messages_safe))
-        elif choice(arr) <= 500:
+        elif arr <= 500:
             number += 1
             save_message = choice(hlp.for_i_help(txt.messages_safe))
         message_main = curses.wrapper(lambda stdscr:
-                        hlp.main(stdscr, [save_message, "[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0, f"----[O.O.P.S.Y]---- in [{place}]",
-                                 0, 1, True))
+                        hlp.main(stdscr, ["[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0,
+                                 f"----[O.O.P.S.Y]---- in [{place}]\n{save_message}",
+                                 0, 2, True, False, timer))
         if message_main == "[X]EXIT":
             return save_message, number, True
         elif message_main == "[<]BACK":

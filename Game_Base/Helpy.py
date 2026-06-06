@@ -3,6 +3,7 @@ import sys
 import time
 from Text import Oopy_help_list
 import heapq
+import asyncio
 
 def dijkstara_with_path(graph, start):
     distances = {vertex: float("infinity") for vertex in graph}
@@ -72,35 +73,48 @@ def history_printer(stdscr, txt, string, printer = True, enter_press = True):
             stdscr.clear()
             break
 
-def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False):
+def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False, count=0):
     cursor_off()
-    while True:
-        stdscr.clear()
-        if up == True:
-            stdscr.addstr(up_text)
+    stdscr.nodelay(True)
+    async def timer(count):
+        count -= 1
+        await asyncio.sleep(1)
 
-        for i, option in enumerate(options):
-            if i == index:
-                stdscr.addstr(string + i, 0, f"{option} <--")
+    async def game(index, timer=0):
+        while True:
+            if up == True and timer == 0:
+                stdscr.addstr(up_text)
             else:
-                stdscr.addstr(string + i, 0, option)
-
-        if down == True:
-            stdscr.addstr(down_text)
-
-        key = stdscr.getch()
-
-        if key in (ord("w"), ord("W")):
-            index = (index - 1) % len(options)
-
-        elif key in (ord("s"), ord("S")):
-            index = (index + 1) % len(options)
-
-        elif key in (10, 13):
+                stdscr.addstr(1, 10, str(count))
             stdscr.clear()
+            for i, option in enumerate(options):
+                if i == index:
+                    stdscr.addstr(string + i, 0, f"{option} <--")
+                else:
+                    stdscr.addstr(string + i, 0, option)
+
+            if down == True:
+                stdscr.addstr(down_text)
             stdscr.refresh()
-            cursor_on()
-            return options[index]
+            key = stdscr.getch()
+
+            if key in (ord("w"), ord("W")):
+                index = (index - 1) % len(options)
+
+            elif key in (ord("s"), ord("S")):
+                index = (index + 1) % len(options)
+
+            elif key in (10, 13):
+                stdscr.clear()
+                stdscr.refresh()
+                cursor_on()
+                return options[index]
+    async def main():
+        task_1 = await timer(count)
+        game_main = await game(index)
+        return game_main
+    main_loop = asyncio.run(main())
+    return main_loop
 
 def city_main(stdscr, options, index, string, up=False, up_text=""): # This city plan printer with choice object
     cursor_off()
@@ -252,16 +266,19 @@ def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
                 a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
                 count = 0
 
-def city_distances(stdscr, options, index, string, distance, up=False, up_text=""): # This city plan printer with choice object
+def city_distances(stdscr, options, index, string, distance, speed, up=False, up_text=""): # This city plan printer with choice object
     cursor_off()
     stdscr.nodelay(True)
     nums = city_numbers(options, distance)
     gens = city_tkinter(nums, 2)
+    iteration = 0
+    index, count = 0, 0
     while True:
         try:
             index, count = next(gens)
+            iteration += 1
         except StopIteration:
-            index, count = nums[len(distance)-2], nums[len(distance)-1]
+            return 0
         stdscr.clear()
         if up == True:
             stdscr.addstr(up_text)
@@ -294,17 +311,13 @@ def city_distances(stdscr, options, index, string, distance, up=False, up_text="
                 stdscr.addstr(string + i, 0, option)
 
         stdscr.refresh()
-        time.sleep(1)
         key = stdscr.getch()
         if key in (10, 13):
             stdscr.clear()
             stdscr.refresh()
             cursor_on()
-            return index, count
-
-
-
-
+            return len(distance)-iteration
+        time.sleep(speed)
 def for_i_help(arr):
     a = []
     for i in arr.values():

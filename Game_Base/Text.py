@@ -58,6 +58,6 @@ city_place_distance = {"Your_base": {"Police": 30},
                        "sector_2a": {"sector_1a": 15},
                        "sector_1a": {"Another_city": 12500}
                        }
-
-creatures_names = {"police": [100, 10, 15, 0], "Trained_police": [120, 10, 25, 0], "Soldier": [150, 12, 35, 5],
-                   "Special_soldier": [200, 8, 50, 20], "O.O.P.E.R.S": [1000, 5, 100, 100]}
+#[hp, speed, damage, armor]
+creatures_names = {"Police": [100, 1, 15, 0], "Trained_police": [120, 1, 25, 0], "Soldier": [150, 1.2, 35, 5],
+                   "Special_soldier": [200, 0.8, 50, 20], "O.O.P.E.R.S": [1000, 0.5, 100, 100]}

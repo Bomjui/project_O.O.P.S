@@ -5,7 +5,7 @@ import City_place_sectors_happen as cpsh
 import OOPY
 import os
 import curses
-from Creatures import path
+from Creatures import paths, Creatures_choice
 
 class workbench: # Класс рабочего стола тут соеденяются сам игровой стол, ноутбук, типо почты и виртуальный помощьник
     def __init__(self, number_message = 0, number_sectors = 0, save_message_sectors = "", starts_number = 0, save_message = "", frames=""):
@@ -48,25 +48,39 @@ class workbench: # Класс рабочего стола тут соеденя�
                 self.rules()
             elif laptop_main_choice == txt.laptop_main[2]:
                 city_main_map = self.cities_map()
-                while city_main_map != txt.city_places[24]:
+                wait = 0
+                while city_main_map != "[X]EXIT":
                     os.system('cls')
+                    if "BOOM" not in txt.city_place_message_save[city_main_map]:
+                        txt.city_place_message_save[city_main_map] = [1, self.save_message_sectors]
+                    else:
+                        txt.city_place_message_save[city_main_map] = []
+                    self.save_message_sectors, self.number_sectors, action = cpsh.message(self.number_sectors,
+                                                                                          self.save_message_sectors,
+                                                                                          city_main_map, wait)
                     if 1 in txt.city_place_message_save[city_main_map]:
                         self.number_sectors = 1
                         self.save_message_sectors = txt.city_place_message_save[city_main_map][1]
                     else:
                         self.number_sectors = 0
-                    self.save_message_sectors, self.number_sectors, action = cpsh.message(self.number_sectors, self.save_message_sectors, city_main_map)
-
-                    txt.city_place_message_save[city_main_map] = [1, self.save_message_sectors]
 
                     if action == True:
                         break
                     elif action == False:
                         city_main_map = self.cities_map()
                     else:
-                        pass
-                        city_distance = curses.wrapper(lambda stdscr: hlp.city_distances(stdscr, txt.city_places, 0, 1, path,
-                                                                        True, "---[City plan]------------------------------------------------------------------------------"))
+                        Creature_name = Creatures_choice()
+                        city_distance = curses.wrapper(
+                            lambda stdscr: hlp.city_distances(stdscr, txt.city_places, 0, 1,
+                                                                paths(city_main_map),
+                                                                txt.creatures_names[Creature_name][1],
+                                                                True,
+                                                                "---[City plan]------------------------------------------------------------------------------"))
+                        if city_distance > 0:
+                            wait = city_distance
+                        else:
+                            txt.city_place_message_save[city_main_map] = ["BOOM"]
+                        #txt.city_place_message_save[city_main_map] = [1, "Not"]
             elif laptop_main_choice == txt.laptop_main[3]:
                 os.system('cls')
                 self.O_O_P_Y()
@@ -105,7 +119,7 @@ class workbench: # Класс рабочего стола тут соеденя�
         curses.curs_set(0)
         while True:
             city_main_map = curses.wrapper(lambda stdscr: hlp.city_main(stdscr, txt.city_places, 0, 1,
-                                                                        True, "---[City plan]------------------------------------------------------------------------------"))
+            True, "---[City plan]------------------------------------------------------------------------------"))
             return city_main_map
     def O_O_P_Y(self):
         oopy_main = OOPY.OPPY_main()
