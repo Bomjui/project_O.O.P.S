@@ -1,3 +1,4 @@
+import curses
 from random import choices
 import sys
 import time
@@ -76,26 +77,14 @@ def history_printer(stdscr, txt, string, printer = True, enter_press = True):
 def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False, count=0):
     cursor_off()
     stdscr.nodelay(True)
-    async def timer(count):
-        count -= 1
-        await asyncio.sleep(1)
-
-    async def game(index, timer=0):
+    game_state = {"time_left": count}
+    async def timer():
+        while game_state["time_left"] > 0:
+            await asyncio.sleep(1)
+            game_state["time_left"] -= 1
+    async def game(index):
+        task1 = asyncio.create_task(timer())
         while True:
-            if up == True and timer == 0:
-                stdscr.addstr(up_text)
-            else:
-                stdscr.addstr(1, 10, str(count))
-            stdscr.clear()
-            for i, option in enumerate(options):
-                if i == index:
-                    stdscr.addstr(string + i, 0, f"{option} <--")
-                else:
-                    stdscr.addstr(string + i, 0, option)
-
-            if down == True:
-                stdscr.addstr(down_text)
-            stdscr.refresh()
             key = stdscr.getch()
 
             if key in (ord("w"), ord("W")):
@@ -105,12 +94,32 @@ def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, d
                 index = (index + 1) % len(options)
 
             elif key in (10, 13):
-                stdscr.clear()
-                stdscr.refresh()
+                stdscr.erase()
+                stdscr.noutrefresh()
                 cursor_on()
                 return options[index]
+            stdscr.erase()
+
+            if up == True and game_state["time_left"] == 0:
+                stdscr.addstr(up_text)
+            elif game_state["time_left"] > 0:
+                stdscr.addstr(up_text)
+                stdscr.addstr(1, 10, f"Wait: {game_state['time_left']}")
+            if game_state["time_left"] != 0 and task1.done():
+                stdscr.addstr(1, 10, "BOOM")
+            for i, option in enumerate(options):
+                if i == index:
+                    stdscr.addstr(string + i, 0, f"{option} <--")
+                else:
+                    stdscr.addstr(string + i, 0, option)
+            if down == True:
+                stdscr.addstr(down_text)
+
+            stdscr.noutrefresh()
+            curses.doupdate()
+            await asyncio.sleep(0.05)
+
     async def main():
-        task_1 = await timer(count)
         game_main = await game(index)
         return game_main
     main_loop = asyncio.run(main())
