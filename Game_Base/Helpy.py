@@ -74,7 +74,7 @@ def history_printer(stdscr, txt, string, printer = True, enter_press = True):
             stdscr.clear()
             break
 
-def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False, count=0):
+def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False, count=0, two=False, two_text=""):
     cursor_off()
     stdscr.nodelay(True)
     game_state = {"time_left": count}
@@ -83,7 +83,7 @@ def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, d
             await asyncio.sleep(1)
             game_state["time_left"] -= 1
     async def game(index):
-        task1 = asyncio.create_task(timer())
+        asyncio.create_task(timer())
         while True:
             key = stdscr.getch()
 
@@ -100,13 +100,14 @@ def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, d
                 return options[index]
             stdscr.erase()
 
-            if up == True and game_state["time_left"] == 0:
+            if up == True:
                 stdscr.addstr(up_text)
+            if two == True and game_state["time_left"] == 0:
+                stdscr.addstr(1, 0, two_text)
             elif game_state["time_left"] > 0:
-                stdscr.addstr(up_text)
+                stdscr.move(1, 0)
+                stdscr.clrtoeol()
                 stdscr.addstr(1, 10, f"Wait: {game_state['time_left']}")
-            if game_state["time_left"] != 0 and task1.done():
-                stdscr.addstr(1, 10, "BOOM")
             for i, option in enumerate(options):
                 if i == index:
                     stdscr.addstr(string + i, 0, f"{option} <--")
@@ -129,7 +130,7 @@ def city_main(stdscr, options, index, string, up=False, up_text=""): # This city
     cursor_off()
     count = 0
     while True:
-        stdscr.clear()
+        stdscr.erase()
         if up == True:
             stdscr.addstr(up_text)
 
@@ -188,8 +189,8 @@ def city_main(stdscr, options, index, string, up=False, up_text=""): # This city
                 count -= 1
 
         elif key in (10, 13):
-            stdscr.clear()
-            stdscr.refresh()
+            stdscr.erase()
+            stdscr.noutrefresh()
             cursor_on()
             if count == 0:
                 return a[index]
@@ -201,6 +202,7 @@ def city_main(stdscr, options, index, string, up=False, up_text=""): # This city
                 return d[index]
             elif count == 4:
                 return e[index]
+        curses.doupdate()
 
 def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
     cursor_off()
@@ -208,25 +210,25 @@ def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
     a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
     button = "next[>]"
     while True:
-        stdscr.clear()
+        stdscr.erase()
         if up == True:
             stdscr.addstr(up_text)
 
         for i, option in enumerate(options):
             if count == 0 and i == 0:
-                stdscr.clear()
+                stdscr.erase()
                 stdscr.addstr(string + i, 0, f"{options[0]} <-- {options[1]}     {options[2]}     {options[3]}     {button}")
             elif count == 1 and i == 0:
-                stdscr.clear()
+                stdscr.erase()
                 stdscr.addstr(string + i, 0, f"{options[0]}     {options[1]} <-- {options[2]}     {options[3]}     {button}")
             elif count == 2 and i == 0:
-                stdscr.clear()
+                stdscr.erase()
                 stdscr.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]} <-- {options[3]}     {button}")
             elif count == 3 and i == 0:
-                stdscr.clear()
+                stdscr.erase()
                 stdscr.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]}     {options[3]} <-- {button}")
             elif count == 4 and i == 0:
-                stdscr.clear()
+                stdscr.erase()
                 stdscr.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]}     {options[3]}     {button} <--")
 
             else:
@@ -251,8 +253,8 @@ def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
                 count -= 1
 
         elif key in (10, 13):
-            stdscr.clear()
-            stdscr.refresh()
+            stdscr.erase()
+            stdscr.noutrefresh()
             cursor_on()
             if options[count] != "Soon":
                 if count == 0:
@@ -274,6 +276,7 @@ def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
                     button = "next[>]"
                 a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
                 count = 0
+        curses.doupdate()
 
 def city_distances(stdscr, options, index, string, distance, speed, up=False, up_text=""): # This city plan printer with choice object
     cursor_off()
@@ -288,7 +291,7 @@ def city_distances(stdscr, options, index, string, distance, speed, up=False, up
             iteration += 1
         except StopIteration:
             return 0
-        stdscr.clear()
+        stdscr.erase()
         if up == True:
             stdscr.addstr(up_text)
 
@@ -319,14 +322,15 @@ def city_distances(stdscr, options, index, string, distance, speed, up=False, up
                 stdscr.addstr(string + i, 20, b[i])
                 stdscr.addstr(string + i, 0, option)
 
-        stdscr.refresh()
+        stdscr.noutrefresh()
         key = stdscr.getch()
         if key in (10, 13):
             stdscr.clear()
-            stdscr.refresh()
+            stdscr.noutrefresh()
             cursor_on()
             return len(distance)-iteration
         time.sleep(speed)
+        curses.doupdate()
 def for_i_help(arr):
     a = []
     for i in arr.values():
