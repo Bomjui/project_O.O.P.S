@@ -1,9 +1,11 @@
+import asyncio
+
 import Text as txt
 import time
 import Helpy as hlp
 import curses
-
-def oppenheimer(player_input, save, result):
+count = 0
+async def oppenheimer(stdcsr, player_input, save, result):
     try:
         not_symbols = player_input.index("(")
         if player_input[:not_symbols] in txt.Oopy_help_list:
@@ -20,10 +22,10 @@ def oppenheimer(player_input, save, result):
         print("O.O.P.S[sys]/terminal >>> This is don't function")
         return False, False
 
-def OOPY_animation():
-    print("O.O.P.S[pl]/terminal >>> Loading..", end="")
-    hlp.animation_terminal(2, ("O", "O", "P", "Y"), 0.3, True)
-def OPPY_main():
+async def OOPY_animation(stdscr):
+    await asyncio.sleep(1)
+    await hlp.animation_terminal(stdscr, 2, ("O", "O", "P", "Y"), 0.3, "O.O.P.S[pl]/terminal >>> Loading..", True)
+async def OPPY_main(stdscr):
     starting_message = 0
     while True:
         if starting_message == 0:
@@ -44,14 +46,14 @@ def OPPY_main():
             elif result in txt.Oopy_help_list:
                 break
         if player_input == txt.Oopy_help_list[0]:
-            OOPY_animation()
+            await OOPY_animation(stdscr)
             print(f"O.O.P.S[sys]/terminal >>> Список всех функций: {str(txt.Oopy_help_list)}")
 
         elif result == txt.Oopy_help_list[1]:
-            OOPY_animation()
+            await OOPY_animation(stdscr)
             print(f"O.O.P.S[sys]/terminal >>> {save}")
         elif result == txt.Oopy_help_list[2]:
-            OOPY_animation()
+            await OOPY_animation()
             print(f"O.O.P.S[sys]/terminal >>> {save} = ", end="")
             player_input = input()
             save_printo, result = oppenheimer(player_input, "", "")
@@ -60,7 +62,7 @@ def OPPY_main():
             else:
                 print(f"O.O.P.S[sys]/terminal >>> Syntaxis error {result} <-- is not /printo")
         elif player_input == txt.Oopy_help_list[3]:
-            OOPY_animation()
+            await OOPY_animation(stdscr)
             back_main = curses.wrapper(
                 lambda stdscr:
                 hlp.OOPY_CHOICE_Function(stdscr, txt.Oopy_help_list, 0, 1,
