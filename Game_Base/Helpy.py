@@ -1,12 +1,11 @@
 import curses
 from random import choices
 import sys
-import time
 from Text import Oopy_help_list
 import heapq
 import asyncio
 
-def dijkstara_with_path(graph, start):
+async def dijkstara_with_path(graph, start):
     distances = {vertex: float("infinity") for vertex in graph}
     distances[start] = 0
     predecessors = {}
@@ -22,9 +21,10 @@ def dijkstara_with_path(graph, start):
                 distances[neighbor] = distance
                 predecessors[neighbor] = current_vertex
                 heapq.heappush(priority_queue, (distance, neighbor))
+        await asyncio.sleep(0.05)
     return distances, predecessors
 
-def get_exact_path(predecessors, start, target):
+async def get_exact_path(predecessors, start, target):
     if target not in predecessors and target != start:
         return []
     path = []
@@ -33,6 +33,7 @@ def get_exact_path(predecessors, start, target):
         path.append(current)
         current = predecessors.get(current)
     path.reverse()
+    await asyncio.sleep(0.05)
     return path
 
 def cursor_off():
@@ -57,6 +58,7 @@ async def animation_terminal(stdscr, n, arr, tm, word, done_showing = False):
     max_y, max_x = stdscr.getmaxyx()
     half_width = 100
     left_win = curses.newwin(max_y, half_width, 0, 0)
+    left_win.nodelay(True)
     for _ in range(n):
         for frame in arr:
             left_win.erase()
@@ -152,11 +154,11 @@ async def city_main(stdscr, options, index, string, up=False, up_text=""): # Thi
             left_win.addstr(up_text)
 
         gen = city_tkinter(options, 5) #
-        a = next(gen)
-        b = next(gen)
-        c = next(gen)
-        d = next(gen)
-        e = next(gen)
+        a = await anext(gen)
+        b = await anext(gen)
+        c = await anext(gen)
+        d = await anext(gen)
+        e = await anext(gen)
 
 
         for i, option in enumerate(a):
@@ -302,58 +304,57 @@ async def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text
 async def city_distances(stdscr, options, index, string, distance, speed, up=False, up_text=""): # This city plan printer with choice object
     cursor_off()
     stdscr.nodelay(True)
-    nums = city_numbers(options, distance)
+    nums = await city_numbers(options, distance)
     gens = city_tkinter(nums, 2)
     iteration = 0
-    index, count = 0, 0
     max_y, max_x = stdscr.getmaxyx()
     half_width = 100
     left_win = curses.newwin(max_y, half_width, 0, 0)
     while True:
         try:
-            index, count = next(gens)
+            index, count = await anext(gens)
             iteration += 1
-        except StopIteration:
+        except StopAsyncIteration:
             return 0
-        left_window(stdscr).erase()
+        left_win.erase()
         if up == True:
-            left_window(stdscr).addstr(up_text)
+            left_win.addstr(up_text)
 
         gen = city_tkinter(options, 5) #
-        a = next(gen)
-        b = next(gen)
-        c = next(gen)
-        d = next(gen)
-        e = next(gen)
+        a = await anext(gen)
+        b = await anext(gen)
+        c = await anext(gen)
+        d = await anext(gen)
+        e = await anext(gen)
 
 
         for i, option in enumerate(a):
             if count == 0 and i == index:
-                left_window(stdscr).addstr(string + i, 0, f"{option} <-- \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]}")
+                left_win.addstr(string + i, 0, f"{option} <-- \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]}")
             elif count == 1 and i == index:
-                left_window(stdscr).addstr(string + i, 0, f"{option} \t    {b[i]} <--       {c[i]} \t    {d[i]} \t\t{e[i]}")
+                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} <--       {c[i]} \t    {d[i]} \t\t{e[i]}")
             elif count == 2 and i == index:
-                left_window(stdscr).addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} <-- \t    {d[i]} \t\t{e[i]}")
+                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} <-- \t    {d[i]} \t\t{e[i]}")
             elif count == 3 and i == index:
-                left_window(stdscr).addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} <-- \t{e[i]}")
+                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} <-- \t{e[i]}")
             elif count == 4 and i == index:
-                left_window(stdscr).addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]} <--")
+                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]} <--")
 
             else:
-                left_window(stdscr).addstr(string + i, 80, e[i])
-                left_window(stdscr).addstr(string + i, 60, d[i])
-                left_window(stdscr).addstr(string + i, 40, c[i])
-                left_window(stdscr).addstr(string + i, 20, b[i])
-                left_window(stdscr).addstr(string + i, 0, option)
-
-        left_window(stdscr).noutrefresh()
+                left_win.addstr(string + i, 80, e[i])
+                left_win.addstr(string + i, 60, d[i])
+                left_win.addstr(string + i, 40, c[i])
+                left_win.addstr(string + i, 20, b[i])
+                left_win.addstr(string + i, 0, option)
+        await asyncio.sleep(0.05)
+        left_win.noutrefresh()
         key = stdscr.getch()
         if key in (10, 13):
-            left_window(stdscr).clear()
-            left_window(stdscr).noutrefresh()
+            left_win.erase()
+            left_win.noutrefresh()
             cursor_on()
             return len(distance)-iteration
-        time.sleep(speed)
+        await asyncio.sleep(speed)
         curses.doupdate()
 def for_i_help(arr):
     a = []
@@ -384,18 +385,18 @@ def city_map_printer(arr, n):
             count += 1
             print(i, end="  ")
 
-def city_tkinter(data, size):
+async def city_tkinter(data, size):
     for i in range(0, len(data), size):
         yield data[i:i + size]
 
-def city_numbers(options, distance):
+async def city_numbers(options, distance):
     gen = city_tkinter(options, 5)
     save = []
-    a = next(gen)
-    b = next(gen)
-    c = next(gen)
-    d = next(gen)
-    e = next(gen)
+    a = await anext(gen)
+    b = await anext(gen)
+    c = await anext(gen)
+    d = await anext(gen)
+    e = await anext(gen)
     for i in distance:
         if i in a:
             num = a.index(i)

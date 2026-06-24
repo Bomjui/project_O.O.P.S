@@ -55,7 +55,7 @@ class workbench: # Класс рабочего стола тут соеденя�
                 self.left_window(stdscr).clear()
                 await self.rules(stdscr)
             elif laptop_main_choice == txt.laptop_main[2]:
-                city_main_map = self.cities_map(stdscr)
+                city_main_map = await self.cities_map(stdscr)
                 wait, count = 0, 0
                 while city_main_map != "[X]EXIT":
                     if 1 in txt.city_place_message_save[city_main_map]:
@@ -64,12 +64,12 @@ class workbench: # Класс рабочего стола тут соеденя�
                     else:
                         self.number_sectors = 0
                     if count > 0:
-                        self.save_message_sectors, self.number_sectors, action = cpsh.message(self.number_sectors,
+                        self.save_message_sectors, self.number_sectors, action = await cpsh.message(stdscr, self.number_sectors,
                                                                                               self.save_message_sectors,
                                                                                               city_main_map, wait)
                         count = 0
                     else:
-                        self.save_message_sectors, self.number_sectors, action = cpsh.message(self.number_sectors,
+                        self.save_message_sectors, self.number_sectors, action = await cpsh.message(stdscr, self.number_sectors,
                                                                                               self.save_message_sectors,
                                                                                               city_main_map)
                     txt.city_place_message_save[city_main_map] = [1, self.save_message_sectors]
@@ -79,10 +79,10 @@ class workbench: # Класс рабочего стола тут соеденя�
                         self.left_window(stdscr).clear()
                         city_main_map = await self.cities_map(stdscr)
                     else:
-                        Creature_name = Creatures_choice()
+                        Creature_name = await Creatures_choice(stdscr)
                         self.left_window(stdscr).clear()
                         city_distance = await hlp.city_distances(stdscr, txt.city_places, 0, 1,
-                                                                paths(city_main_map),
+                                                                await paths(city_main_map),
                                                                 txt.creatures_names[Creature_name][1],
                                                                 True,
                                                                 "---[City plan]------------------------------------------------------------------------------")
@@ -131,6 +131,6 @@ class workbench: # Класс рабочего стола тут соеденя�
             return city_main_map
     async def O_O_P_Y(self, stdscr):
         self.left_window(stdscr).clear()
-        oopy_main = await OOPY.OPPY_main()
+        oopy_main = await OOPY.OPPY_main(stdscr)
         
         

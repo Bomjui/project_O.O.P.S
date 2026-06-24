@@ -1,11 +1,13 @@
 import asyncio
-
 import Text as txt
-import time
 import Helpy as hlp
 import curses
 count = 0
+def count_lines(count):
+    count += 1
+    return count
 async def oppenheimer(stdcsr, player_input, save, result):
+    left_win = curses.newwin(74, 100, 0, 0)
     try:
         not_symbols = player_input.index("(")
         if player_input[:not_symbols] in txt.Oopy_help_list:
@@ -16,29 +18,44 @@ async def oppenheimer(stdcsr, player_input, save, result):
                 return "()", True
             return save, result
         else:
+            left_win.addstr(count_lines(count), 0, "O.O.P.S[sys]/terminal >>> This is don't function")
+            left_win.refresh()
             print("O.O.P.S[sys]/terminal >>> This is don't function")
             return False, False
     except ValueError:
+        left_win.addstr(count_lines(count), 0, "O.O.P.S[sys]/terminal >>> This is don't function")
+        left_win.refresh()
         print("O.O.P.S[sys]/terminal >>> This is don't function")
         return False, False
 
 async def OOPY_animation(stdscr):
+    max_y, max_x = stdscr.getmaxyx()
+    half_width = 100
+    left_win = curses.newwin(max_y, half_width, 0, 0)
     await asyncio.sleep(1)
     await hlp.animation_terminal(stdscr, 2, ("O", "O", "P", "Y"), 0.3, "O.O.P.S[pl]/terminal >>> Loading..", True)
+    left_win.erase()
 async def OPPY_main(stdscr):
     starting_message = 0
+    max_y, max_x = stdscr.getmaxyx()
+    half_width = 100
+    left_win = curses.newwin(max_y, half_width, 0, 0)
     while True:
         if starting_message == 0:
+            left_win.addstr(count_lines(count), 0, f"O.O.P.S[sys]/terminal >>> {txt.Oopy_input_message[0]}")
+            left_win.getstr(count_lines(count), len(f"O.O.P.S[sys]/terminal >>> {txt.Oopy_input_message[0]}"))
+            left_win.refresh()
             print("O.O.P.S[sys]/terminal >>>", txt.Oopy_input_message[0])
             starting_message += 1
         while True:
-            print("O.O.P.S[pl]/terminal >>> ", end="")
-            time.sleep(0.5)
+            await OOPY_animation(stdscr)
             save, result = "", ""
             player_input = input()
             if player_input not in txt.Oopy_help_list:
-                save, result = oppenheimer(player_input, save, result)
+                save, result = oppenheimer(stdscr, player_input, save, result)
                 if result == True:
+                    left_win.addstr(count_lines(count), 0, f"O.O.P.S[sys]/terminal >>> Syntaxis error you forgot paste {save} ")
+                    left_win.refresh()
                     print(f"O.O.P.S[sys]/terminal >>> Syntaxis error you forgot paste {save} ")
                     break
             if player_input in txt.Oopy_help_list:
@@ -53,10 +70,10 @@ async def OPPY_main(stdscr):
             await OOPY_animation(stdscr)
             print(f"O.O.P.S[sys]/terminal >>> {save}")
         elif result == txt.Oopy_help_list[2]:
-            await OOPY_animation()
+            await OOPY_animation(stdscr)
             print(f"O.O.P.S[sys]/terminal >>> {save} = ", end="")
             player_input = input()
-            save_printo, result = oppenheimer(player_input, "", "")
+            save_printo, result = oppenheimer(stdscr, player_input, "", "")
             if f"{result}" == "/printo":
                 print(f"O.O.P.S[sys]/terminal >>> {save} == {save_printo}")
             else:
