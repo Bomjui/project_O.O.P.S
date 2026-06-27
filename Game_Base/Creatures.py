@@ -1,6 +1,6 @@
 import asyncio
 from Text import city_place_distance, creatures_names
-from Helpy import dijkstara_with_path, get_exact_path, main
+import Helpy as hlp
 class Creatures:
     def __init__(self, name, hp, speed, attack, armor):
         self.name = name
@@ -38,12 +38,12 @@ O_O_P_E_R_S = Creatures("O.O.P.E.R.S", creatures_names["O.O.P.E.R.S"][0], creatu
 async def paths(target, creatures="", start="Your_base"):
     if creatures == "Police":
         start = "Police"
-    distances, predecessors = await dijkstara_with_path(city_place_distance, "Your_base")
-    path = await get_exact_path(predecessors, start, target)
+    distances, predecessors = await hlp.dijkstara_with_path(city_place_distance, "Your_base")
+    path = await hlp.get_exact_path(predecessors, start, target)
     await asyncio.sleep(0.05)
     return path
 async def Creatures_choice(stdscr):
-   Creature_choice = await main(stdscr, list(creatures_names.keys()), 0, "Your work bench:",
+   Creature_choice = await hlp.Left_window_func(stdscr).main(stdscr, list(creatures_names.keys()), 0, "Your work bench:",
                             0, 1, True)
    await asyncio.sleep(0.05)
    return Creature_choice

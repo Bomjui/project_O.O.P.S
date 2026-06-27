@@ -48,314 +48,304 @@ def delete_symbol():
     sys.stdout.write("\b \b")
     sys.stdout.flush()
 
-def left_window(stdscr):
-    max_y, max_x = stdscr.getmaxyx()
-    half_width = 100
-    left_win = curses.newwin(max_y, half_width, 0, 0)
-    return left_win
+class Left_window_func:
+    def __init__(self, stdscr, left_win=0):
+        max_y, max_x = stdscr.getmaxyx()
+        half_width = 100
+        self.left_win = left_win
+        self.left_win = curses.newwin(max_y, half_width, 0, 0)
 
-async def animation_terminal(stdscr, n, arr, tm, word, done_showing = False):
-    max_y, max_x = stdscr.getmaxyx()
-    half_width = 100
-    left_win = curses.newwin(max_y, half_width, 0, 0)
-    left_win.nodelay(True)
-    for _ in range(n):
-        for frame in arr:
-            left_win.erase()
-            left_win.addstr(0, 0, word)
-            left_win.addstr(0, len(word), frame)
-            left_win.refresh()
+    def left_window(self):
+        return self.left_win
+
+    async def animation_terminal(self, n, arr, tm, word, done_showing = False, delete = True, string = 0, win = None):
+        if win == None:
+            win = self.left_win
+            self.left_win.nodelay(True)
+        for _ in range(n):
+            for frame in arr:
+                if delete == True:
+                    win.erase()
+                win.addstr(string, 0, word)
+                win.addstr(string, len(word), frame)
+                win.refresh()
+                await asyncio.sleep(tm)
+        if done_showing == True:
+            win.addstr(string, 0, " [done]")
             await asyncio.sleep(tm)
-    if done_showing == True:
-        left_win.addstr(" [done]")
-        await asyncio.sleep(tm)
-        left_win.erase()
+            if delete == True:
+                win.erase()
 
-def history_printer(stdscr, txt, string, printer = True, enter_press = True):
-    max_y, max_x = stdscr.getmaxyx()
-    half_width = 100
-    left_win = curses.newwin(max_y, half_width, 0, 0)
-    while True:
-        if printer == True:
-            left_win.addstr(txt)
-        if enter_press == True:
-            left_win.addstr(string, 0, "Нажми Enter чтобы продолжить")
-            left_win.refresh()
-            key = stdscr.getch()
-            if key in (10, 13):
-                left_win.clear()
-                break
-        else:
-            left_win.erase()
-            break
-
-async def main(stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False, count=0, two=False, two_text=""):
-    cursor_off()
-    stdscr.nodelay(True)
-    game_state = {"time_left": count}
-    max_y, max_x = stdscr.getmaxyx()
-    half_width = 100
-    left_win = curses.newwin(max_y, half_width, 0, 0)
-    async def timer():
-        while game_state["time_left"] > 0:
-            await asyncio.sleep(1)
-            game_state["time_left"] -= 1
-    async def game(index):
-        asyncio.create_task(timer())
+    def history_printer(self, stdscr, txt, string, printer = True, enter_press = True):
         while True:
+            if printer == True:
+                self.left_win.addstr(txt)
+            if enter_press == True:
+                self.left_win.addstr(string, 0, "Нажми Enter чтобы продолжить")
+                self.left_win.refresh()
+                key = stdscr.getch()
+                if key in (10, 13):
+                    self.left_win.clear()
+                    break
+            else:
+                self.left_win.erase()
+                break
+
+    async def main(self, stdscr, options, index, up_text="", down_text="", string=0, up=False, down=False, count=0, two=False, two_text=""):
+        cursor_off()
+        stdscr.nodelay(True)
+        game_state = {"time_left": count}
+        async def timer():
+            while game_state["time_left"] > 0:
+                await asyncio.sleep(1)
+                game_state["time_left"] -= 1
+        async def game(index):
+            asyncio.create_task(timer())
+            while True:
+                key = stdscr.getch()
+
+                if key in (ord("w"), ord("W")):
+                    index = (index - 1) % len(options)
+
+                elif key in (ord("s"), ord("S")):
+                    index = (index + 1) % len(options)
+
+                elif key in (10, 13):
+                    self.left_win.erase()
+                    self.left_win.noutrefresh()
+                    return options[index]
+                self.left_win.erase()
+
+                if up == True:
+                    self.left_win.addstr(up_text)
+                if two == True and game_state["time_left"] == 0:
+                    self.left_win.addstr(1, 0, two_text)
+                elif game_state["time_left"] > 0:
+                    self.left_win.move(1, 0)
+                    self.left_win.clrtoeol()
+                    self.left_win.addstr(1, 10, f"Wait: {game_state['time_left']}")
+                for i, option in enumerate(options):
+                    if i == index:
+                        self.left_win.addstr(string + i, 0, f"{option} <--")
+                    else:
+                        self.left_win.addstr(string + i, 0, option)
+                if down == True:
+                    self.left_win.addstr(down_text)
+
+                self.left_win.noutrefresh()
+                curses.doupdate()
+                await asyncio.sleep(0.05)
+
+        #async def mains():
+        game_main = await game(index)
+        return game_main
+        #main_loop = asyncio.run(main())
+        #return main_loop
+
+    async def city_main(self, stdscr, options, index, string, up=False, up_text=""): # This city plan printer with choice object
+        count = 0
+        while True:
+            self.left_win.erase()
+            if up == True:
+                self.left_win.addstr(up_text)
+
+            gen = city_tkinter(options, 5) #
+            a = await anext(gen)
+            b = await anext(gen)
+            c = await anext(gen)
+            d = await anext(gen)
+            e = await anext(gen)
+
+
+            for i, option in enumerate(a):
+                if count == 0 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} <-- \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]}")
+                elif count == 1 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} \t    {b[i]} <--       {c[i]} \t    {d[i]} \t\t{e[i]}")
+                elif count == 2 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} <-- \t    {d[i]} \t\t{e[i]}")
+                elif count == 3 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} <-- \t{e[i]}")
+                elif count == 4 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]} <--")
+
+                else:
+                    self.left_win.addstr(string + i, 80, e[i])
+                    self.left_win.addstr(string + i, 60, d[i])
+                    self.left_win.addstr(string + i, 40, c[i])
+                    self.left_win.addstr(string + i, 20, b[i])
+                    self.left_win.addstr(string + i, 0, option)
+
             key = stdscr.getch()
 
             if key in (ord("w"), ord("W")):
-                index = (index - 1) % len(options)
+                if index == 0:
+                    index = 0
+                else:
+                    index -= 1
+
 
             elif key in (ord("s"), ord("S")):
-                index = (index + 1) % len(options)
+                if index >= 4:
+                    index = 4
+                else:
+                    index += 1
+
+            elif key in (ord("d"), ord("D")):
+                if count >= 4:
+                    count = 4
+                else:
+                    count += 1
+
+            elif key in (ord("a"), ord("A")):
+                if count == 0:
+                    count = 0
+                else:
+                    count -= 1
 
             elif key in (10, 13):
-                left_win.erase()
-                left_win.noutrefresh()
-                return options[index]
-            left_win.erase()
-
-            if up == True:
-                left_win.addstr(up_text)
-            if two == True and game_state["time_left"] == 0:
-                left_win.addstr(1, 0, two_text)
-            elif game_state["time_left"] > 0:
-                left_win.move(1, 0)
-                left_win.clrtoeol()
-                left_win.addstr(1, 10, f"Wait: {game_state['time_left']}")
-            for i, option in enumerate(options):
-                if i == index:
-                    left_win.addstr(string + i, 0, f"{option} <--")
-                else:
-                    left_win.addstr(string + i, 0, option)
-            if down == True:
-                left_win.addstr(down_text)
-
-            left_win.noutrefresh()
-            curses.doupdate()
-            await asyncio.sleep(0.05)
-
-    #async def mains():
-    game_main = await game(index)
-    return game_main
-    #main_loop = asyncio.run(main())
-    #return main_loop
-
-async def city_main(stdscr, options, index, string, up=False, up_text=""): # This city plan printer with choice object
-    count = 0
-    max_y, max_x = stdscr.getmaxyx()
-    half_width = 100
-    left_win = curses.newwin(max_y, half_width, 0, 0)
-    while True:
-        left_win.erase()
-        if up == True:
-            left_win.addstr(up_text)
-
-        gen = city_tkinter(options, 5) #
-        a = await anext(gen)
-        b = await anext(gen)
-        c = await anext(gen)
-        d = await anext(gen)
-        e = await anext(gen)
-
-
-        for i, option in enumerate(a):
-            if count == 0 and i == index:
-                left_win.addstr(string + i, 0, f"{option} <-- \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]}")
-            elif count == 1 and i == index:
-                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} <--       {c[i]} \t    {d[i]} \t\t{e[i]}")
-            elif count == 2 and i == index:
-                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} <-- \t    {d[i]} \t\t{e[i]}")
-            elif count == 3 and i == index:
-                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} <-- \t{e[i]}")
-            elif count == 4 and i == index:
-                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]} <--")
-
-            else:
-                left_win.addstr(string + i, 80, e[i])
-                left_win.addstr(string + i, 60, d[i])
-                left_win.addstr(string + i, 40, c[i])
-                left_win.addstr(string + i, 20, b[i])
-                left_win.addstr(string + i, 0, option)
-
-        key = stdscr.getch()
-
-        if key in (ord("w"), ord("W")):
-            if index == 0:
-                index = 0
-            else:
-                index -= 1
-
-
-        elif key in (ord("s"), ord("S")):
-            if index >= 4:
-                index = 4
-            else:
-                index += 1
-
-        elif key in (ord("d"), ord("D")):
-            if count >= 4:
-                count = 4
-            else:
-                count += 1
-
-        elif key in (ord("a"), ord("A")):
-            if count == 0:
-                count = 0
-            else:
-                count -= 1
-
-        elif key in (10, 13):
-            left_win.erase()
-            left_win.noutrefresh()
-            if count == 0:
-                return a[index]
-            elif count == 1:
-                return b[index]
-            elif count == 2:
-                return c[index]
-            elif count == 3:
-                return d[index]
-            elif count == 4:
-                return e[index]
-        left_win.noutrefresh()
-        curses.doupdate()
-
-async def OOPY_CHOICE_Function(stdscr, options, index, string, up=False, up_text=""):
-    cursor_off()
-    count = 0
-    a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
-    button = "next[>]"
-    max_y, max_x = stdscr.getmaxyx()
-    half_width = 100
-    left_win = curses.newwin(max_y, half_width, 0, 0)
-    while True:
-        left_window(stdscr).erase()
-        if up == True:
-            left_window(stdscr).addstr(up_text)
-
-        for i, option in enumerate(options):
-            if count == 0 and i == 0:
-                left_window(stdscr).erase()
-                left_window(stdscr).addstr(string + i, 0, f"{options[0]} <-- {options[1]}     {options[2]}     {options[3]}     {button}")
-            elif count == 1 and i == 0:
-                left_window(stdscr).erase()
-                left_window(stdscr).addstr(string + i, 0, f"{options[0]}     {options[1]} <-- {options[2]}     {options[3]}     {button}")
-            elif count == 2 and i == 0:
-                left_window(stdscr).erase()
-                left_window(stdscr).addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]} <-- {options[3]}     {button}")
-            elif count == 3 and i == 0:
-                left_window(stdscr).erase()
-                left_window(stdscr).addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]}     {options[3]} <-- {button}")
-            elif count == 4 and i == 0:
-                left_window(stdscr).erase()
-                left_window(stdscr).addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]}     {options[3]}     {button} <--")
-
-            else:
-                left_window(stdscr).addstr(string, 0, options[0])
-                left_window(stdscr).addstr(string, a+5, options[1])
-                left_window(stdscr).addstr(string, a+b+10, options[2])
-                left_window(stdscr).addstr(string, a+b+c+15, options[3])
-                left_window(stdscr).addstr(string, a+b+c+d+20, button)
-
-        key = stdscr.getch()
-
-        if key in (ord("d"), ord("D")):
-            if count >= 4:
-                count = 4
-            else:
-                count += 1
-
-        elif key in (ord("a"), ord("A")):
-            if count == 0:
-                count = 0
-            else:
-                count -= 1
-
-        elif key in (10, 13):
-            left_window(stdscr).erase()
-            left_window(stdscr).noutrefresh()
-            cursor_on()
-            if options[count] != "Soon":
+                self.left_win.erase()
+                self.left_win.noutrefresh()
                 if count == 0:
-                    return options[0]
+                    return a[index]
                 elif count == 1:
-                    return options[1]
+                    return b[index]
                 elif count == 2:
-                    return options[2]
+                    return c[index]
                 elif count == 3:
-                    return options[3]
-            if count == 4:
-                if button == "next[>]":
-                    options = options[4:]
-                    for _ in range(5-len(options)):
-                        options.append("Soon")
-                    button = "[<]back"
-                elif button == "[<]back":
-                    options = Oopy_help_list
-                    button = "next[>]"
-                a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
-                count = 0
-        left_window(stdscr).noutrefresh()
-        curses.doupdate()
+                    return d[index]
+                elif count == 4:
+                    return e[index]
+            self.left_win.noutrefresh()
+            curses.doupdate()
 
-async def city_distances(stdscr, options, index, string, distance, speed, up=False, up_text=""): # This city plan printer with choice object
-    cursor_off()
-    stdscr.nodelay(True)
-    nums = await city_numbers(options, distance)
-    gens = city_tkinter(nums, 2)
-    iteration = 0
-    max_y, max_x = stdscr.getmaxyx()
-    half_width = 100
-    left_win = curses.newwin(max_y, half_width, 0, 0)
-    while True:
-        try:
-            index, count = await anext(gens)
-            iteration += 1
-        except StopAsyncIteration:
-            return 0
-        left_win.erase()
-        if up == True:
-            left_win.addstr(up_text)
+    async def OOPY_CHOICE_Function(self, stdscr, options, index, string, up=False, up_text=""):
+        cursor_off()
+        count = 0
+        a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
+        button = "next[>]"
+        while True:
+            self.left_win.erase()
+            if up == True:
+                self.left_win.addstr(up_text)
 
-        gen = city_tkinter(options, 5) #
-        a = await anext(gen)
-        b = await anext(gen)
-        c = await anext(gen)
-        d = await anext(gen)
-        e = await anext(gen)
+            for i, option in enumerate(options):
+                if count == 0 and i == 0:
+                    self.left_win.erase()
+                    self.left_win.addstr(string + i, 0, f"{options[0]} <-- {options[1]}     {options[2]}     {options[3]}     {button}")
+                elif count == 1 and i == 0:
+                    self.left_win.erase()
+                    self.left_win.addstr(string + i, 0, f"{options[0]}     {options[1]} <-- {options[2]}     {options[3]}     {button}")
+                elif count == 2 and i == 0:
+                    self.left_win.erase()
+                    self.left_win.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]} <-- {options[3]}     {button}")
+                elif count == 3 and i == 0:
+                    self.left_win.erase()
+                    self.left_win.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]}     {options[3]} <-- {button}")
+                elif count == 4 and i == 0:
+                    self.left_win.erase()
+                    self.left_win.addstr(string + i, 0, f"{options[0]}     {options[1]}     {options[2]}     {options[3]}     {button} <--")
+
+                else:
+                    self.left_win.addstr(string, 0, options[0])
+                    self.left_win.addstr(string, a+5, options[1])
+                    self.left_win.addstr(string, a+b+10, options[2])
+                    self.left_win.addstr(string, a+b+c+15, options[3])
+                    self.left_win.addstr(string, a+b+c+d+20, button)
+
+            key = stdscr.getch()
+
+            if key in (ord("d"), ord("D")):
+                if count >= 4:
+                    count = 4
+                else:
+                    count += 1
+
+            elif key in (ord("a"), ord("A")):
+                if count == 0:
+                    count = 0
+                else:
+                    count -= 1
+
+            elif key in (10, 13):
+                self.left_win.erase()
+                self.left_win.noutrefresh()
+                cursor_on()
+                if options[count] != "Soon":
+                    if count == 0:
+                        return options[0]
+                    elif count == 1:
+                        return options[1]
+                    elif count == 2:
+                        return options[2]
+                    elif count == 3:
+                        return options[3]
+                if count == 4:
+                    if button == "next[>]":
+                        options = options[4:]
+                        for _ in range(5-len(options)):
+                            options.append("Soon")
+                        button = "[<]back"
+                    elif button == "[<]back":
+                        options = Oopy_help_list
+                        button = "next[>]"
+                    a, b, c, d, e = len(options[0]), len(options[1]), len(options[2]), len(options[3]), 7
+                    count = 0
+            self.left_win.noutrefresh()
+            curses.doupdate()
+
+    async def city_distances(self, stdscr, options, index, string, distance, speed, up=False, up_text=""): # This city plan printer with choice object
+        cursor_off()
+        stdscr.nodelay(True)
+        nums = await city_numbers(options, distance)
+        gens = city_tkinter(nums, 2)
+        iteration = 0
+        while True:
+            try:
+                index, count = await anext(gens)
+                iteration += 1
+            except StopAsyncIteration:
+                return 0
+            self.left_win.erase()
+            if up == True:
+                self.left_win.addstr(up_text)
+
+            gen = city_tkinter(options, 5) #
+            a = await anext(gen)
+            b = await anext(gen)
+            c = await anext(gen)
+            d = await anext(gen)
+            e = await anext(gen)
 
 
-        for i, option in enumerate(a):
-            if count == 0 and i == index:
-                left_win.addstr(string + i, 0, f"{option} <-- \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]}")
-            elif count == 1 and i == index:
-                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} <--       {c[i]} \t    {d[i]} \t\t{e[i]}")
-            elif count == 2 and i == index:
-                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} <-- \t    {d[i]} \t\t{e[i]}")
-            elif count == 3 and i == index:
-                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} <-- \t{e[i]}")
-            elif count == 4 and i == index:
-                left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]} <--")
+            for i, option in enumerate(a):
+                if count == 0 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} <-- \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]}")
+                elif count == 1 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} \t    {b[i]} <--       {c[i]} \t    {d[i]} \t\t{e[i]}")
+                elif count == 2 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} <-- \t    {d[i]} \t\t{e[i]}")
+                elif count == 3 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} <-- \t{e[i]}")
+                elif count == 4 and i == index:
+                    self.left_win.addstr(string + i, 0, f"{option} \t    {b[i]} \t        {c[i]} \t    {d[i]} \t\t{e[i]} <--")
 
-            else:
-                left_win.addstr(string + i, 80, e[i])
-                left_win.addstr(string + i, 60, d[i])
-                left_win.addstr(string + i, 40, c[i])
-                left_win.addstr(string + i, 20, b[i])
-                left_win.addstr(string + i, 0, option)
-        await asyncio.sleep(0.05)
-        left_win.noutrefresh()
-        key = stdscr.getch()
-        if key in (10, 13):
-            left_win.erase()
-            left_win.noutrefresh()
-            cursor_on()
-            return len(distance)-iteration
-        await asyncio.sleep(speed)
-        curses.doupdate()
+                else:
+                    self.left_win.addstr(string + i, 80, e[i])
+                    self.left_win.addstr(string + i, 60, d[i])
+                    self.left_win.addstr(string + i, 40, c[i])
+                    self.left_win.addstr(string + i, 20, b[i])
+                    self.left_win.addstr(string + i, 0, option)
+            await asyncio.sleep(0.05)
+            self.left_win.noutrefresh()
+            key = stdscr.getch()
+            if key in (10, 13):
+                self.left_win.erase()
+                self.left_win.noutrefresh()
+                cursor_on()
+                return len(distance)-iteration
+            await asyncio.sleep(speed)
+            curses.doupdate()
 def for_i_help(arr):
     a = []
     for i in arr.values():

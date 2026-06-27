@@ -1,4 +1,4 @@
-from workbench_g import workbench, test
+from workbench_g import workbench
 import curses
 import Days
 import Right_win
@@ -13,35 +13,43 @@ class Game:
 
     def final_ends(self):
         pass
-async def main_game_loop(stdscr):
-    while True:
-        work = workbench(stdscr)
-        task = await work.bench(stdscr)
-        await asyncio.sleep(0.05)
-
-async def game(stdscr):
-    while True:
-        games = test(stdscr)
-        await games
 def days_game_loop(stdscr):
     days = Days.Game_days_live(stdscr)
     days.Days_live(stdscr)
-async def right_win_loop(stdscr):
-    while True:
-        await Right_win.time(stdscr, 10)
-        await asyncio.sleep(0.1)
-async def main(stdscr):
-    stdscr.nodelay(True)
+class Game_init:
+    def __init__(self, count=0):
+        self.count = count
+    async def main_game_loop(self, stdscr):
+        while True:
+            work = workbench(stdscr)
+            await work.bench(stdscr)
+            await asyncio.sleep(0.05)
+    async def right_win_loop(self, stdscr):
+        while True:
+            await Right_win.time(stdscr, 10, self.count)
+            await asyncio.sleep(0.05)
+    async def main(self, stdscr):
+        stdscr.nodelay(True)
+        while self.count <= 4:
+            task1 = asyncio.create_task(self.main_game_loop(stdscr))
+            task2 = asyncio.create_task(self.right_win_loop(stdscr))
+            tasks = {task1, task2}
+            done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            for task in pending:
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+                self.count += 1
+            if task2.done():
+                continue
+        return self.count
 
-    await asyncio.gather(
-        #game(stdscr)
-        main_game_loop(stdscr),
-        right_win_loop(stdscr)
-    )
 def game_loop(stdscr):
-    asyncio.run(main(stdscr))
+    curses.curs_set(0)
+    asyncio.run(Game_init().main(stdscr))
 
 if __name__ == "__main__":
     curses.wrapper(days_game_loop)
     curses.wrapper(game_loop)
-    curses.curs_set(0)

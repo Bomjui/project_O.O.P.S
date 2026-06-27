@@ -1,5 +1,4 @@
 import asyncio
-import time
 import Text as txt
 import Helpy as hlp
 import City_place_sectors_happen as cpsh
@@ -8,7 +7,7 @@ import os
 import curses
 from Creatures import paths, Creatures_choice
 async def test(stdscr):
-    main_bench_choice = hlp.main(stdscr, txt.workbench_main, 0, "Your work bench:", 0, 1, True, False, 0)
+    main_bench_choice = hlp.Left_window_func(stdscr).main(stdscr, txt.workbench_main, 0, "Your work bench:", 0, 1, True, False, 0)
     await main_bench_choice
 class workbench: # Класс рабочего стола тут соеденяются сам игровой стол, ноутбук, типо почты и виртуальный помощьник
     def __init__(self, number_message = 0, number_sectors = 0, save_message_sectors = "", starts_number = 0, save_message = "", frames=""):
@@ -28,26 +27,27 @@ class workbench: # Класс рабочего стола тут соеденя�
         curses.curs_set(0)
         while True:
             if cpsh.message_see(self.number_message) == False:
-                main_bench_choice = await hlp.main(stdscr, txt.workbench_main, 0, "Your work bench:", 0, 1, True, False, 0) # Состояние без сообщения
+                main_bench_choice = await hlp.Left_window_func(stdscr).main(stdscr, txt.workbench_main, 0, "Your work bench:", 0, 1, True, False, 0) # Состояние без сообщения
             else:
-                main_bench_choice = await hlp.main(stdscr, txt.workbench_main_with_message, 0, "Your work bench:", 0, 1, True, False, 0)# Состояние с сообщением
+                main_bench_choice = await hlp.Left_window_func(stdscr).main(stdscr, txt.workbench_main_with_message, 0, "Your work bench:", 0, 1, True, False, 0)# Состояние с сообщением
             if main_bench_choice == txt.workbench_main[0]:
                 self.left_window(stdscr).clear()
                 await self.laptop(stdscr)
             elif main_bench_choice == txt.workbench_main[1] or main_bench_choice == txt.workbench_main_with_message[1]:
                 self.save_message, self.number_message = None, None
+            elif main_bench_choice == txt.workbench_main[3] or main_bench_choice == txt.workbench_main_with_message[3]:
+                break
             await asyncio.sleep(0.05)
-
     async def laptop(self, stdscr):
         curses.curs_set(0)
         while True:
             self.frames = ["|", "/", "--", "\\"]
             if self.starts_number == 0:
                 hlp.cursor_off()
-                await hlp.animation_terminal(stdscr, 2, self.frames, 0.1, "--O.O.P.S instalation--", True)
+                await hlp.Left_window_func(stdscr).animation_terminal(2, self.frames, 0.1, "--O.O.P.S instalation--", True)
                 hlp.cursor_on()
                 self.starts_number += 1
-            laptop_main_choice = await hlp.main(stdscr, txt.laptop_main, 0, "Your work bench:", 0, 1, True)
+            laptop_main_choice = await hlp.Left_window_func(stdscr).main(stdscr, txt.laptop_main, 0, "Your work bench:", 0, 1, True)
             if laptop_main_choice == txt.laptop_main[0]:
                 self.left_window(stdscr).clear()
                 await self.documentation(stdscr)
@@ -81,7 +81,7 @@ class workbench: # Класс рабочего стола тут соеденя�
                     else:
                         Creature_name = await Creatures_choice(stdscr)
                         self.left_window(stdscr).clear()
-                        city_distance = await hlp.city_distances(stdscr, txt.city_places, 0, 1,
+                        city_distance = await hlp.Left_window_func(stdscr).city_distances(stdscr, txt.city_places, 0, 1,
                                                                 await paths(city_main_map),
                                                                 txt.creatures_names[Creature_name][1],
                                                                 True,
@@ -98,25 +98,22 @@ class workbench: # Класс рабочего стола тут соеденя�
                     print("News")
                     break
             else:
-                os.system('cls')
                 break
 
     async def rules(self, stdscr):
         curses.curs_set(0)
-        await hlp.animation_terminal(stdscr, 2, self.frames, 0.1, "Opening rules", True)
-        hlp.cursor_on()
-        time.sleep(1)
-        rules_s = await hlp.main(stdscr, txt.rules, 0,
+        await hlp.Left_window_func(stdscr).animation_terminal(2, self.frames, 0.1, "Opening rules", True)
+        await asyncio.sleep(1)
+        rules_s = await hlp.Left_window_func(stdscr).main(stdscr, txt.rules, 0,
         "Внимание если ты это читаешь это значит что ты отвественнен.Правила что ты никогда не должен нарушать:",
         0, 1,True)
         self.left_window(stdscr).clear()
         
     async def documentation(self, stdscr):
         curses.curs_set(0)
-        await hlp.animation_terminal(stdscr, 5, self.frames, 0.3,  "Opening documentation ",  True)
-        hlp.cursor_on()
+        await hlp.Left_window_func(stdscr).animation_terminal(5, self.frames, 0.3,  "Opening documentation ",  True)
         while True:
-            documentation_main_choice = await hlp.main(stdscr, txt.laptop_documentation, 0,
+            documentation_main_choice = await hlp.Left_window_func(stdscr).main(stdscr, txt.laptop_documentation, 0,
                                                                                "[Documentation] O.O.P.S\t|Chose file:|", 0, 1, True)
             if documentation_main_choice == txt.laptop_documentation[4]:
                 self.left_window(stdscr).clear()
@@ -125,12 +122,13 @@ class workbench: # Класс рабочего стола тут соеденя�
     async def cities_map(self, stdscr):
         curses.curs_set(0)
         while True:
-            city_main_map = await hlp.city_main(stdscr, txt.city_places, 0, 1,
+            city_main_map = await hlp.Left_window_func(stdscr).city_main(stdscr, txt.city_places, 0, 1,
             True, "---[City plan]------------------------------------------------------------------------------")
             self.left_window(stdscr).clear()
             return city_main_map
     async def O_O_P_Y(self, stdscr):
         self.left_window(stdscr).clear()
-        oopy_main = await OOPY.OPPY_main(stdscr)
+        oopy_main = await OOPY.OPPYS(stdscr).OPPY_main(stdscr)
+
         
         

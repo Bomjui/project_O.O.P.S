@@ -9,7 +9,7 @@ async def message(stdscr, number, save_message, place, timer=0):
     arr = []
     await asyncio.sleep(1)
     if number == 1:
-        message_main = await hlp.main(stdscr, ["[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0,
+        message_main = await hlp.Left_window_func(stdscr).main(stdscr, ["[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0,
                                       f"----[O.O.P.S.Y]---- in [{place}]",
                              0, 2, True, False, timer, True, save_message)
     elif number == 0:
@@ -26,7 +26,7 @@ async def message(stdscr, number, save_message, place, timer=0):
             save_message = choice(hlp.for_i_help(txt.messages_ocs))
         elif arr == txt.difficult[4]:
             save_message = choice(hlp.for_i_help(txt.messages_00PS))
-        message_main = await hlp.main(stdscr, ["[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0,
+        message_main = await hlp.Left_window_func(stdscr).main(stdscr, ["[!]Bring the soldiers in place", "[<]BACK", "[X]EXIT"], 0,
                                  f"----[O.O.P.S.Y]---- in [{place}]",
                                  0, 2, True, False, timer, True, save_message)
     await asyncio.sleep(0.05)
