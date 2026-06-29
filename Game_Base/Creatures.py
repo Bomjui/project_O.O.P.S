@@ -38,7 +38,7 @@ O_O_P_E_R_S = Creatures("O.O.P.E.R.S", creatures_names["O.O.P.E.R.S"][0], creatu
 async def paths(target, creatures="", start="Your_base"):
     if creatures == "Police":
         start = "Police"
-    distances, predecessors = await hlp.dijkstara_with_path(city_place_distance, "Your_base")
+    distances, predecessors = await hlp.dijkstara_with_path(city_place_distance, start)
     path = await hlp.get_exact_path(predecessors, start, target)
     await asyncio.sleep(0.05)
     return path

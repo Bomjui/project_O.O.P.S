@@ -11,7 +11,7 @@ class Game_days_live: #Класс дней, счёт дней, цикл игры
 
     def Days_live(self, stdscr):
         self.count_day = 1
-        hlp.Left_window_func(stdscr).history_printer(stdscr, txt.History, 4)
+        hlp.Left_window_func(stdscr).history_printer(stdscr, txt.History, 3)
         print(f"День {self.count_day}")
         stdscr.clear()
         time.sleep(1)

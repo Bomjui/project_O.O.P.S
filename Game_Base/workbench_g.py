@@ -3,12 +3,9 @@ import Text as txt
 import Helpy as hlp
 import City_place_sectors_happen as cpsh
 import OOPY
-import os
 import curses
 from Creatures import paths, Creatures_choice
-async def test(stdscr):
-    main_bench_choice = hlp.Left_window_func(stdscr).main(stdscr, txt.workbench_main, 0, "Your work bench:", 0, 1, True, False, 0)
-    await main_bench_choice
+
 class workbench: # Класс рабочего стола тут соеденяются сам игровой стол, ноутбук, типо почты и виртуальный помощьник
     def __init__(self, number_message = 0, number_sectors = 0, save_message_sectors = "", starts_number = 0, save_message = "", frames=""):
         self.starts_number = starts_number
@@ -35,8 +32,6 @@ class workbench: # Класс рабочего стола тут соеденя�
                 await self.laptop(stdscr)
             elif main_bench_choice == txt.workbench_main[1] or main_bench_choice == txt.workbench_main_with_message[1]:
                 self.save_message, self.number_message = None, None
-            elif main_bench_choice == txt.workbench_main[3] or main_bench_choice == txt.workbench_main_with_message[3]:
-                break
             await asyncio.sleep(0.05)
     async def laptop(self, stdscr):
         curses.curs_set(0)

@@ -1,7 +1,7 @@
 import asyncio
 import curses
 import Text as txt
-async def time(stdscr, str=0, days = 0):
+async def time(stdscr, str=0, day = 0):
     curses.curs_set(0)
     stdscr.nodelay(True)
 
@@ -13,8 +13,8 @@ async def time(stdscr, str=0, days = 0):
     right_win = curses.newwin(0, 48, 0, 100)
     clock_win = curses.newwin(3, 48, 0, 100)
     async def passage_of_time():
-        while txt.timer["hour"] != 1:
-            await asyncio.sleep(0.05)
+        while txt.timer["hour"] != 6:
+            await asyncio.sleep(1)
             txt.timer["min"] += 1
             if txt.timer["min"] == 60:
                 txt.timer["hour"] += 1
@@ -30,16 +30,20 @@ async def time(stdscr, str=0, days = 0):
             clock_win.noutrefresh()
             clock_win.box()
             curses.doupdate()
-            clock_win.addstr(1, str+10, txt.days[days])
-            clock_win.addstr(1, str+20, txt.dates[days])
+            clock_win.addstr(1, str+10, txt.days[day])
+            clock_win.addstr(1, str+20, txt.dates[day])
             clock_win.addstr(2, 1, "-"*46)
             if txt.timer['min'] < 10:
                 clock_win.addstr(1, str, f"0{txt.timer['hour']}:0{txt.timer['min']}")
             else:
                 clock_win.addstr(1, str, f"0{txt.timer['hour']}:{txt.timer['min']}")
+                clock_win.noutrefresh()
+            if task_timer.done() and day < 4:
+                txt.timer['hour'], txt.timer['min'] = 0, 0
+                break
             await asyncio.sleep(0.1)
+        return
 
 
 
     await asyncio.gather(game())
-curses.wrapper(time)
